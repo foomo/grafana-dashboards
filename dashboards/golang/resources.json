@@ -172,7 +172,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "process_resident_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
@@ -308,7 +308,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "deriv(process_virtual_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
@@ -426,7 +426,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
@@ -458,7 +458,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
@@ -577,7 +577,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "deriv(go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
@@ -607,7 +607,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"exemplar": true,
 					"expr": "deriv(go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",

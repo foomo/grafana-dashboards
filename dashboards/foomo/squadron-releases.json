@@ -42,7 +42,7 @@
 				"builtIn": 1,
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"enable": true,
 				"hide": true,
@@ -289,7 +289,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"exemplar": false,
@@ -414,7 +414,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"definition": "",
 				"includeAll": true,

@@ -170,7 +170,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"exemplar": false,
@@ -275,7 +275,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"exemplar": true,
@@ -333,7 +333,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\"},container)",
 				"includeAll": false,
@@ -375,7 +375,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", namespace=~\"$namespace\", container=~\"$container\"},gotsrpc_service)",
 				"includeAll": true,

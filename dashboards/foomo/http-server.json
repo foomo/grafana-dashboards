@@ -166,7 +166,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"exemplar": true,
@@ -193,7 +193,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "sum(rate(http_server_duration_bucket{namespace=~\"$namespace\", container=~\"$container\", http_server_name=~\"$service\"} [$__rate_interval])) / sum(rate(http_server_duration_bucket{namespace=~\"$namespace\", container=~\"$container\", http_server_name=~\"$service\"} [$__rate_interval]))",
@@ -295,7 +295,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "sum(rate(http_server_duration_count{namespace=~\"$namespace\", container=~\"$container\", http_server_name=~\"$service\"}[$__rate_interval])) by (http_status_code)",
@@ -395,7 +395,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "sum by (http_status_code) (rate(http_server_duration_count{namespace=~\"$namespace\", container=~\"$container\", http_server_name=~\"$service\",http_status_code=~\"(4|5).*\"}[$__rate_interval])) / ignoring(http_status_code) group_left sum(rate(http_server_duration_count{namespace=~\"$namespace\", container=~\"$container\", http_server_name=~\"$service\"}[$__rate_interval]))",
@@ -451,7 +451,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(http_server_duration_count{namespace=~\"$namespace\"},container)",
 				"includeAll": false,
