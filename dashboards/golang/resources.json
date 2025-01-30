@@ -206,7 +206,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -642,7 +642,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -748,7 +748,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -854,7 +854,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -960,7 +960,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -1087,7 +1087,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(kube_pod_info, namespace)",
 				"includeAll": true,
