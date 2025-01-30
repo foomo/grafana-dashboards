@@ -1,0 +1,453 @@
+{
+	"__inputs": [
+		{
+			"name": "DS_PROMETHEUS",
+			"label": "Prometheus",
+			"description": "",
+			"type": "datasource",
+			"pluginId": "prometheus",
+			"pluginName": "Prometheus"
+		}
+	],
+	"__elements": {},
+	"__requires": [
+		{
+			"type": "grafana",
+			"id": "grafana",
+			"name": "Grafana",
+			"version": "11.4.0"
+		},
+		{
+			"type": "datasource",
+			"id": "grafana-pyroscope-datasource",
+			"name": "Grafana Pyroscope",
+			"version": "11.3.1"
+		},
+		{
+			"type": "datasource",
+			"id": "prometheus",
+			"name": "Prometheus",
+			"version": "1.0.0"
+		},
+		{
+			"type": "panel",
+			"id": "timeseries",
+			"name": "Time series",
+			"version": ""
+		}
+	],
+	"annotations": {
+		"list": [
+			{
+				"builtIn": 1,
+				"datasource": {
+					"type": "datasource",
+					"uid": "grafana"
+				},
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"target": {
+					"limit": 100,
+					"matchAny": false,
+					"tags": [],
+					"type": "dashboard"
+				},
+				"type": "dashboard"
+			}
+		]
+	},
+	"description": "Foomo GoTSRPC internal and external services",
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"id": null,
+	"links": [],
+	"panels": [
+		{
+			"collapsed": false,
+			"gridPos": {
+				"h": 1,
+				"w": 24,
+				"x": 0,
+				"y": 0
+			},
+			"id": 8,
+			"panels": [],
+			"repeat": "package",
+			"title": "Service: $package",
+			"type": "row"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${datasource}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"axisColorMode": "text",
+						"axisGridShow": true,
+						"axisLabel": "",
+						"axisPlacement": "auto",
+						"axisSoftMin": 0,
+						"barAlignment": 0,
+						"drawStyle": "line",
+						"fillOpacity": 60,
+						"gradientMode": "opacity",
+						"hideFrom": {
+							"legend": false,
+							"tooltip": false,
+							"viz": false
+						},
+						"insertNulls": false,
+						"lineInterpolation": "linear",
+						"lineWidth": 3,
+						"pointSize": 5,
+						"scaleDistribution": {
+							"type": "linear"
+						},
+						"showPoints": "auto",
+						"spanNulls": true,
+						"stacking": {
+							"group": "A",
+							"mode": "none"
+						},
+						"thresholdsStyle": {
+							"mode": "dashed"
+						}
+					},
+					"mappings": [],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "red",
+								"value": 0.2
+							}
+						]
+					},
+					"unit": "s"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 11,
+				"w": 24,
+				"x": 0,
+				"y": 1
+			},
+			"id": 2,
+			"maxPerRow": 3,
+			"options": {
+				"legend": {
+					"calcs": [],
+					"displayMode": "table",
+					"placement": "bottom",
+					"showLegend": true,
+					"sortBy": "Name",
+					"sortDesc": true
+				},
+				"tooltip": {
+					"mode": "single",
+					"sort": "none"
+				}
+			},
+			"pluginVersion": "8.3.1",
+			"repeat": "quantile",
+			"repeatDirection": "h",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", gotsrpc_service=~\"$service\", gotsrpc_func=~\"$func\",\nquantile=\"$le\",gotsrpc_operation=\"execution\", namespace=~\"$namespace\", container=~\"$container\"}) by (gotsrpc_service,gotsrpc_func)",
+					"format": "time_series",
+					"hide": false,
+					"interval": "",
+					"intervalFactor": 2,
+					"legendFormat": "{{gotsrpc_service}}.{{gotsrpc_func}}",
+					"range": true,
+					"refId": "A"
+				}
+			],
+			"title": "Duration p$le",
+			"type": "timeseries"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${datasource}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "palette-classic"
+					},
+					"custom": {
+						"axisBorderShow": false,
+						"axisCenteredZero": false,
+						"axisColorMode": "text",
+						"axisLabel": "",
+						"axisPlacement": "auto",
+						"barAlignment": 0,
+						"barWidthFactor": 0.6,
+						"drawStyle": "line",
+						"fillOpacity": 0,
+						"gradientMode": "opacity",
+						"hideFrom": {
+							"legend": false,
+							"tooltip": false,
+							"viz": false
+						},
+						"insertNulls": false,
+						"lineInterpolation": "linear",
+						"lineWidth": 1,
+						"pointSize": 5,
+						"scaleDistribution": {
+							"type": "linear"
+						},
+						"showPoints": "auto",
+						"spanNulls": false,
+						"stacking": {
+							"group": "A",
+							"mode": "normal"
+						},
+						"thresholdsStyle": {
+							"mode": "off"
+						}
+					},
+					"fieldMinMax": false,
+					"mappings": [],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": null
+							},
+							{
+								"color": "red",
+								"value": 80
+							}
+						]
+					},
+					"unit": "reqps"
+				},
+				"overrides": []
+			},
+			"gridPos": {
+				"h": 11,
+				"w": 12,
+				"x": 12,
+				"y": 12
+			},
+			"id": 4,
+			"options": {
+				"legend": {
+					"calcs": [],
+					"displayMode": "table",
+					"placement": "bottom",
+					"showLegend": true,
+					"sortBy": "Mean",
+					"sortDesc": true
+				},
+				"tooltip": {
+					"mode": "single",
+					"sort": "none"
+				}
+			},
+			"pluginVersion": "11.4.0",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": true,
+					"expr": "sum(rate(gotsrpc_request_duration_seconds_count{gotsrpc_package=~\"$package\", gotsrpc_service=~\"$service\", gotsrpc_func=~\"$func\", namespace=~\"$namespace\", container=~\"$container\", gotsrpc_operation=\"execution\"}[$__rate_interval])) by (gotsrpc_package,gotsrpc_service,gotsrpc_func)",
+					"hide": false,
+					"interval": "",
+					"intervalFactor": 1,
+					"legendFormat": "{{gotsrpc_service}}.{{gotsrpc_func}}",
+					"range": true,
+					"refId": "A"
+				}
+			],
+			"title": "Requests rate",
+			"type": "timeseries"
+		}
+	],
+	"refresh": "",
+	"schemaVersion": 40,
+	"tags": [
+		"Foomo",
+		"GoTSRPC"
+	],
+	"templating": {
+		"list": [
+			{
+				"current": {},
+				"includeAll": false,
+				"name": "datasource",
+				"options": [],
+				"query": "prometheus",
+				"refresh": 1,
+				"regex": "",
+				"type": "datasource"
+			},
+			{
+				"current": {},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${datasource}"
+				},
+				"definition": "label_values(gotsrpc_request_duration_seconds{},namespace)",
+				"includeAll": false,
+				"label": "squadron",
+				"name": "namespace",
+				"options": [],
+				"query": {
+					"query": "label_values(gotsrpc_request_duration_seconds{},namespace)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"type": "query"
+			},
+			{
+				"current": {},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\"},container)",
+				"includeAll": false,
+				"label": "unit",
+				"name": "container",
+				"options": [],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\"},container)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"type": "query"
+			},
+			{
+				"current": {},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${datasource}"
+				},
+				"definition": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\", container=~\"$container\"},gotsrpc_package)",
+				"hide": 2,
+				"includeAll": true,
+				"label": "Package",
+				"multi": true,
+				"name": "package",
+				"options": [],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\", container=~\"$container\"},gotsrpc_package)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"type": "query"
+			},
+			{
+				"current": {},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", namespace=~\"$namespace\", container=~\"$container\"},gotsrpc_service)",
+				"includeAll": true,
+				"label": "Service",
+				"name": "service",
+				"options": [],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", namespace=~\"$namespace\", container=~\"$container\"},gotsrpc_service)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"type": "query"
+			},
+			{
+				"current": {},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${datasource}"
+				},
+				"definition": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", namespace=~\"$namespace\", gotsrpc_service=~\"$service\", container=~\"$container\"},gotsrpc_func)",
+				"includeAll": true,
+				"label": "Method",
+				"name": "func",
+				"options": [],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$package\", namespace=~\"$namespace\", gotsrpc_service=~\"$service\", container=~\"$container\"},gotsrpc_func)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"type": "query"
+			},
+			{
+				"current": {
+					"text": "0.99",
+					"value": "0.99"
+				},
+				"includeAll": false,
+				"name": "le",
+				"options": [
+					{
+						"selected": true,
+						"text": "0.99",
+						"value": "0.99"
+					},
+					{
+						"selected": false,
+						"text": "0.9",
+						"value": "0.9"
+					},
+					{
+						"selected": false,
+						"text": "0.5",
+						"value": "0.5"
+					}
+				],
+				"query": "0.99,0.9,0.5",
+				"type": "custom"
+			}
+		]
+	},
+	"time": {
+		"from": "now-1h",
+		"to": "now"
+	},
+	"timepicker": {},
+	"timezone": "browser",
+	"title": "Foomo GoTSRPC",
+	"uid": "foomo_gotsrpc",
+	"version": 1,
+	"weekStart": ""
+}

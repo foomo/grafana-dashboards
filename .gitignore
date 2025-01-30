@@ -1,0 +1,27 @@
+.*
+*.lock
+*.log
+*.pid
+*.retry
+*.tgz
+*.zip
+*.pem
+/tmp/
+
+### Git ###
+!.gitkeep
+!.gitignore
+!.gitmodules
+!.gitattributes
+
+### GitHub ###
+!.github/
+
+### VSCode ###
+!.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.default.json
+
+### EditorConfig ###
+!.editorconfig
