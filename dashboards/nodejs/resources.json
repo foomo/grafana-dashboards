@@ -148,7 +148,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${datasource"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "irate(process_cpu_time{process_cpu_state=\"user\", namespace=~\"$namespace\", service=~\"$service\", pod=~\"$pod\"}[$__rate_interval]) * 100",
@@ -178,7 +178,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${datasource"
+				"uid": "${datasource}"
 			},
 			"description": "",
 			"fieldConfig": {
@@ -282,7 +282,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "${datasource"
+				"uid": "${datasource}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -381,7 +381,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${datasource"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "system_memory_usage{system_memory_state=\"free\", namespace=~\"$namespace\", service=~\"$service\", pod=~\"$pod\"}",
@@ -484,7 +484,7 @@
 				{
 					"datasource": {
 						"type": "prometheus",
-						"uid": "${datasource"
+						"uid": "${datasource}"
 					},
 					"editorMode": "code",
 					"expr": "system_memory_utilization{system_memory_state=\"used\", namespace=~\"$namespace\", service=~\"$service\", pod=~\"$pod\"}",
@@ -534,7 +534,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${datasource"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(target_info{telemetry_sdk_language=\"nodejs\"},namespace)",
 				"includeAll": true,
@@ -576,7 +576,7 @@
 				"current": {},
 				"datasource": {
 					"type": "prometheus",
-					"uid": "${datasource"
+					"uid": "${datasource}"
 				},
 				"definition": "label_values(target_info{namespace=~\"$namespace\", service_name=~\"$app|$service\", telemetry_sdk_language=\"nodejs\"},host_name)",
 				"includeAll": true,
