@@ -2682,7 +2682,7 @@
 						"uid": "${datasource}"
 					},
 					"editorMode": "code",
-					"expr": "- (sum(rate(container_network_transmit_bytes_total{}[$__rate_interval])) by (namespace)",
+					"expr": "- sum(rate(container_network_transmit_bytes_total{}[$__rate_interval])) by (namespace)",
 					"hide": false,
 					"interval": "$resolution",
 					"legendFormat": "Transmitted : {{ namespace }}",

@@ -25,3 +25,6 @@
 
 ### EditorConfig ###
 !.editorconfig
+
+### Grizzly ###
+settings.yaml
