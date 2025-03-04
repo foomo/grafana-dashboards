@@ -1,7 +1,26 @@
 -include .makerc
 .DEFAULT_GOAL:=help
 
+settings.yaml:
+	@echo "NOTE: Please add a settings yaml"
+	@exit 1
+
 # --- Targets -----------------------------------------------------------------
+
+.PHONY: foomo.gotsrpc
+## Serve through grizzly
+foomo.gotsrpc: settings.yaml
+	@grr serve -w -b --only-spec --kind Dashboard dashboards/foomo/gotsrpc.json
+
+.PHONY: foomo.http-server
+## Serve through grizzly
+foomo.http-server: settings.yaml
+	@grr serve -w -b --only-spec --kind Dashboard dashboards/foomo/http-server.json
+
+.PHONY: foomo.squadron-releases
+## Serve through grizzly
+foomo.squadron-releases: settings.yaml
+	@grr serve -w -b --only-spec --kind Dashboard dashboards/foomo/squadron-releases.json
 
 ## === Utils ===
 
