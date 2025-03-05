@@ -15,12 +15,25 @@
       }
     ]
   },
-  "description": "Foomo Squadron Helm releases",
+  "description": "Foomo Squadron Releases",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-  "links": [],
+	"links": [
+		{
+			"asDropdown": false,
+			"icon": "external link",
+			"includeVars": false,
+			"keepTime": false,
+			"tags": [],
+			"targetBlank": false,
+			"title": "Edit on GitHub",
+			"tooltip": "",
+			"type": "link",
+			"url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/squadron-releases.json"
+		}
+	],
   "panels": [
     {
       "datasource": {
@@ -500,7 +513,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Squadron Releases",
+  "title": "Foomo Squadron Releases",
   "uid": "foomo_squadron_releases",
   "version": 1,
   "weekStart": ""

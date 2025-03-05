@@ -21,7 +21,7 @@
 			}
 		]
 	},
-	"description": "Foomo GoTSRPC internal and external services",
+	"description": "Foomo GoTSRPC Server Metrics",
 	"editable": true,
 	"fiscalYearStartMonth": 0,
 	"graphTooltip": 0,
@@ -555,8 +555,8 @@
 	},
 	"timepicker": {},
 	"timezone": "browser",
-	"title": "Foomo GoTSRPC 2",
-	"uid": "foomo_gotsrpc_2",
+	"title": "Foomo GoTSRPC",
+	"uid": "foomo_gotsrpc",
 	"version": 1,
 	"weekStart": ""
 }
