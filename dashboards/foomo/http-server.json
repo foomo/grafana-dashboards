@@ -21,11 +21,25 @@
       }
     ]
   },
+	"description": "Foomo HTTP Server Metrics",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-  "links": [],
+	"links": [
+		{
+			"asDropdown": false,
+			"icon": "external link",
+			"includeVars": false,
+			"keepTime": false,
+			"tags": [],
+			"targetBlank": false,
+			"title": "Edit on GitHub",
+			"tooltip": "",
+			"type": "link",
+			"url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/http-server.json"
+		}
+	],
   "panels": [
     {
       "datasource": {
