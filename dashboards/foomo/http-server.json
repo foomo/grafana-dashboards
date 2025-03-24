@@ -21,25 +21,25 @@
       }
     ]
   },
-	"description": "Foomo HTTP Server Metrics",
+  "description": "Foomo HTTP Server Metrics",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-	"links": [
-		{
-			"asDropdown": false,
-			"icon": "external link",
-			"includeVars": false,
-			"keepTime": false,
-			"tags": [],
-			"targetBlank": false,
-			"title": "Edit on GitHub",
-			"tooltip": "",
-			"type": "link",
-			"url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/http-server.json"
-		}
-	],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Edit on GitHub",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/http-server.json"
+    }
+  ],
   "panels": [
     {
       "datasource": {
@@ -60,8 +60,8 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 62,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -69,7 +69,7 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -123,11 +123,12 @@
           "width": 450
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -227,11 +228,12 @@
           "width": 450
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -240,12 +242,24 @@
           },
           "editorMode": "code",
           "expr": "(sum(rate(http_server_duration_count{namespace=~\"$namespace\", service=~\"$service\", http_server_name=~\"$server\",http_status_code=~\"(5).*\"}[$__rate_interval])) by (namespace,service,http_server_name) \n/\nsum(rate(http_server_duration_count{namespace=~\"$namespace\", service=~\"$service\", http_server_name=~\"$server\"}[$__rate_interval])) by (namespace,service,http_server_name)) \u003e 0",
-          "legendFormat": "{{namespace}}.{{service}}:{{http_server_name}}",
+          "legendFormat": "{{namespace}}.{{service}}:{{http_server_name}} [5xx]",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(sum(rate(http_server_duration_count{namespace=~\"$namespace\", service=~\"$service\", http_server_name=~\"$server\",http_status_code=~\"(4).*\"}[$__rate_interval])) by (namespace,service,http_server_name) \n/\nsum(rate(http_server_duration_count{namespace=~\"$namespace\", service=~\"$service\", http_server_name=~\"$server\"}[$__rate_interval])) by (namespace,service,http_server_name)) \u003e 0",
+          "hide": false,
+          "legendFormat": "{{namespace}}.{{service}}:{{http_server_name}} [4xx]",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Error rate",
+      "title": "Errors",
       "type": "timeseries"
     },
     {
@@ -267,7 +281,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 63,
+            "fillOpacity": 62,
             "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
@@ -276,13 +290,13 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 3,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -330,11 +344,12 @@
           "width": 450
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -350,7 +365,7 @@
           "refId": "A"
         }
       ],
-      "title": "Response Time",
+      "title": "Response Time (p95)",
       "type": "timeseries"
     }
   ],
@@ -365,8 +380,8 @@
     "list": [
       {
         "current": {
-          "text": "Prometheus Prod",
-          "value": "prometheus-prod"
+          "text": "Prometheus",
+          "value": "prometheus"
         },
         "includeAll": false,
         "name": "datasource",
@@ -378,9 +393,7 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
+          "text": "All",
           "value": [
             "$__all"
           ]
@@ -406,9 +419,7 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
+          "text": "All",
           "value": [
             "$__all"
           ]
