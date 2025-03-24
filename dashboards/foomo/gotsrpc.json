@@ -378,8 +378,8 @@
 		"list": [
 			{
 				"current": {
-					"text": "Prometheus Prod",
-					"value": "prometheus-prod"
+					"text": "Prometheus",
+					"value": "prometheus"
 				},
 				"includeAll": false,
 				"name": "datasource",

@@ -3730,9 +3730,8 @@
 		"list": [
 			{
 				"current": {
-					"selected": false,
-					"text": "Prometheus Prod",
-					"value": "prometheus-prod"
+					"text": "Prometheus",
+					"value": "prometheus"
 				},
 				"hide": 0,
 				"includeAll": false,
