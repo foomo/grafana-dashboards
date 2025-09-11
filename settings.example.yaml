@@ -1,0 +1,12 @@
+apiversion: v1alpha1
+current-context: default
+contexts:
+  default:
+    name: default
+    grafana:
+      user: admin
+      url: http://localhost:3000
+      token: "password"
+    output-format: json
+    targets:
+      - Dashboard

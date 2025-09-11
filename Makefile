@@ -1,11 +1,15 @@
 -include .makerc
 .DEFAULT_GOAL:=help
 
+# --- Config ------------------------------------------------------------------
+
 settings.yaml:
 	@echo "NOTE: Please add a settings yaml"
 	@exit 1
 
 # --- Targets -----------------------------------------------------------------
+
+### Tasks
 
 .PHONY: foomo.gotsrpc
 ## Serve through grizzly
@@ -22,37 +26,28 @@ foomo.http-server: settings.yaml
 foomo.squadron-releases: settings.yaml
 	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/foomo/squadron-releases.json
 
-## === Utils ===
+.PHONY: nodejs.resources
+## Serve through grizzly
+nodejs.resources: settings.yaml
+	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/nodejs/resources.json
+
+### Utils
 
 .PHONY: help
 ## Show help text
 help:
+	@echo "\033[1;36mGrafana Dashboards\033[0m"
 	@awk '{ \
-		if ($$0 ~ /^.PHONY: [a-zA-Z\-\_0-9]+$$/) { \
-			helpCommand = substr($$0, index($$0, ":") + 2); \
-			if (helpMessage) { \
-				printf "\033[36m%-23s\033[0m %s\n", \
-					helpCommand, helpMessage; \
-				helpMessage = ""; \
-			} \
-		} else if ($$0 ~ /^[a-zA-Z\-\_0-9.]+:/) { \
-			helpCommand = substr($$0, 0, index($$0, ":")); \
-			if (helpMessage) { \
-				printf "\033[36m%-23s\033[0m %s\n", \
-					helpCommand, helpMessage"\n"; \
-				helpMessage = ""; \
-			} \
-		} else if ($$0 ~ /^##/) { \
-			if (helpMessage) { \
-				helpMessage = helpMessage"\n                        "substr($$0, 3); \
-			} else { \
-				helpMessage = substr($$0, 3); \
-			} \
-		} else { \
-			if (helpMessage) { \
-				print "\n                        "helpMessage"\n" \
-			} \
-			helpMessage = ""; \
+		if($$0 ~ /^### /){ \
+			if(help) printf "\033[36m%-23s\033[0m %s\n\n", cmd, help; help=""; \
+			printf "\n\033[1;36m%s\033[0m\n", substr($$0,5); \
+		} else if($$0 ~ /^[a-zA-Z0-9._-]+:/){ \
+			cmd = substr($$0, 1, index($$0, ":")-1); \
+			if(help) printf "  \033[36m%-23s\033[0m %s\n", cmd, help; help=""; \
+		} else if($$0 ~ /^##/){ \
+			help = help ? help "\n                        " substr($$0,3) : substr($$0,3); \
+		} else if(help){ \
+			print "\n                        " help "\n"; help=""; \
 		} \
-	}' \
-	$(MAKEFILE_LIST)
+	}' $(MAKEFILE_LIST)
+
