@@ -17,6 +17,9 @@
 ## GitHub
 !.github/
 
+## Mise
+!.mise.toml
+
 ## Lefthook
 !.lefthook/
 !.lefthook.yaml

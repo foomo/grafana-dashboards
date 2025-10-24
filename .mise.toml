@@ -1,0 +1,7 @@
+[tools]
+# https://github.com/biomejs/biome/releases
+biome = "2.3.0"
+# https://github.com/evilmartians/lefthook/releases
+lefthook = "2.0.0"
+# https://github.com/grafana/grizzly/releases
+"github:grafana/grizzly" = "0.7.1"
