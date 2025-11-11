@@ -619,7 +619,6 @@
 		"to": "now"
 	},
 	"title": "Foomo / GoTSRPC",
-	"uid": "foomo_gotsrpc",
 	"variables": [
 		{
 			"kind": "IntervalVariable",
