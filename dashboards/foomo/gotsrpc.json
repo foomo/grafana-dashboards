@@ -1,562 +1,809 @@
 {
-	"annotations": {
-		"list": [
-			{
-				"builtIn": 1,
-				"datasource": {
-					"type": "datasource",
-					"uid": "grafana"
-				},
+	"annotations": [
+		{
+			"kind": "AnnotationQuery",
+			"spec": {
+				"builtIn": true,
 				"enable": true,
 				"hide": true,
 				"iconColor": "rgba(0, 211, 255, 1)",
-				"name": "Annotations \u0026 Alerts",
-				"target": {
-					"limit": 100,
-					"matchAny": false,
-					"tags": [],
-					"type": "dashboard"
-				},
-				"type": "dashboard"
+				"name": "Annotations & Alerts",
+				"query": {
+					"group": "grafana",
+					"kind": "DataQuery",
+					"spec": {},
+					"version": "v0"
+				}
 			}
-		]
-	},
-	"description": "Foomo GoTSRPC Server Metrics",
+		}
+	],
+	"cursorSync": "Crosshair",
 	"editable": true,
-	"fiscalYearStartMonth": 0,
-	"graphTooltip": 0,
-	"id": 1,
-	"links": [
-		{
-			"asDropdown": false,
-			"icon": "external link",
-			"includeVars": false,
-			"keepTime": false,
-			"tags": [],
-			"targetBlank": false,
-			"title": "Edit on GitHub",
-			"tooltip": "",
-			"type": "link",
-			"url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/gotsrpc.json"
-		}
-	],
-	"panels": [
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${datasource}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"mode": "palette-classic"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 62,
-						"gradientMode": "opacity",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
-						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineWidth": 2,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "auto",
-						"spanNulls": false,
-						"stacking": {
-							"group": "A",
-							"mode": "normal"
-						},
-						"thresholdsStyle": {
-							"mode": "off"
-						}
-					},
-					"fieldMinMax": false,
-					"mappings": [],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
+	"elements": {
+		"panel-1": {
+			"kind": "Panel",
+			"spec": {
+				"data": {
+					"kind": "QueryGroup",
+					"spec": {
+						"queries": [
 							{
-								"color": "green",
-								"value": null
+								"kind": "PanelQuery",
+								"spec": {
+									"hidden": false,
+									"query": {
+										"group": "prometheus",
+										"kind": "DataQuery",
+										"spec": {
+											"editorMode": "code",
+											"exemplar": true,
+											"expr": "histogram_quantile($percentile, sum(rate(gotsrpc_execution_duration_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$interval])) by (le, gotsrpc_package, gotsrpc_service, gotsrpc_func))",
+											"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})",
+											"range": true
+										},
+										"version": "v0"
+									},
+									"refId": "A"
+								}
+							}
+						],
+						"queryOptions": {},
+						"transformations": []
+					}
+				},
+				"description": "",
+				"id": 1,
+				"links": [],
+				"title": "Duration",
+				"vizConfig": {
+					"group": "timeseries",
+					"kind": "VizConfig",
+					"spec": {
+						"fieldConfig": {
+							"defaults": {
+								"color": {
+									"mode": "palette-classic"
+								},
+								"custom": {
+									"axisBorderShow": false,
+									"axisCenteredZero": false,
+									"axisColorMode": "text",
+									"axisLabel": "",
+									"axisPlacement": "auto",
+									"barAlignment": 0,
+									"barWidthFactor": 0.6,
+									"drawStyle": "line",
+									"fillOpacity": 0,
+									"gradientMode": "none",
+									"hideFrom": {
+										"legend": false,
+										"tooltip": false,
+										"viz": false
+									},
+									"insertNulls": false,
+									"lineInterpolation": "linear",
+									"lineWidth": 1,
+									"pointSize": 5,
+									"scaleDistribution": {
+										"type": "linear"
+									},
+									"showPoints": "auto",
+									"showValues": false,
+									"spanNulls": false,
+									"stacking": {
+										"group": "A",
+										"mode": "none"
+									},
+									"thresholdsStyle": {
+										"mode": "area"
+									}
+								},
+								"thresholds": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "green",
+											"value": 0
+										},
+										{
+											"color": "orange",
+											"value": 0.2
+										},
+										{
+											"color": "dark-red",
+											"value": 0.5
+										}
+									]
+								},
+								"unit": "s"
 							},
-							{
-								"color": "red",
-								"value": 80
-							}
-						]
-					},
-					"unit": "reqps"
-				},
-				"overrides": []
-			},
-			"gridPos": {
-				"h": 10,
-				"w": 12,
-				"x": 0,
-				"y": 0
-			},
-			"id": 4,
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "bottom",
-					"showLegend": true,
-					"sortBy": "Max",
-					"sortDesc": true
-				},
-				"tooltip": {
-					"mode": "single",
-					"sort": "none"
-				}
-			},
-			"pluginVersion": "11.3.0",
-			"targets": [
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${datasource}"
-					},
-					"editorMode": "code",
-					"exemplar": true,
-					"expr": "sum(rate(gotsrpc_request_duration_seconds_count{namespace=~\"$namespace\", service=~\"$service\", gotsrpc_package=~\"$pkg\", gotsrpc_service=~\"$svc\", gotsrpc_func=~\"$fnc\"}[$__rate_interval])) by (gotsrpc_package,gotsrpc_package,gotsrpc_service,gotsrpc_func)",
-					"hide": false,
-					"interval": "",
-					"intervalFactor": 1,
-					"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}:{{gotsrpc_func}}",
-					"range": true,
-					"refId": "A"
-				}
-			],
-			"title": "Load",
-			"type": "timeseries"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${datasource}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"fixedColor": "dark-red",
-						"mode": "shades"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 62,
-						"gradientMode": "opacity",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
+							"overrides": []
 						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineStyle": {
-							"fill": "solid"
-						},
-						"lineWidth": 2,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "auto",
-						"spanNulls": true,
-						"stacking": {
-							"group": "A",
-							"mode": "none"
-						},
-						"thresholdsStyle": {
-							"mode": "dashed"
-						}
-					},
-					"fieldMinMax": false,
-					"mappings": [],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": null
-							}
-						]
-					},
-					"unit": "percentunit"
-				},
-				"overrides": []
-			},
-			"gridPos": {
-				"h": 10,
-				"w": 12,
-				"x": 12,
-				"y": 0
-			},
-			"id": 6,
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "bottom",
-					"showLegend": true,
-					"sortBy": "Max",
-					"sortDesc": true
-				},
-				"tooltip": {
-					"mode": "single",
-					"sort": "none"
-				}
-			},
-			"pluginVersion": "11.3.0",
-			"targets": [
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${datasource}"
-					},
-					"editorMode": "code",
-					"exemplar": true,
-					"expr": "sum(increase(gotsrpc_request_duration_seconds_count{namespace=~\"$namespace\", service=~\"$service\", gotsrpc_package=~\"$pkg\", gotsrpc_service=~\"$svc\", gotsrpc_func=~\"$fnc\", gotsrpc_error=\"true\"}[$__rate_interval])) by (namespace,service,gotsrpc_package,gotsrpc_service,gotsrpc_func)\n/\nsum(increase(gotsrpc_request_duration_seconds_count{namespace=~\"$namespace\", service=~\"$service\", gotsrpc_package=~\"$pkg\", gotsrpc_service=~\"$svc\", gotsrpc_func=~\"$fnc\"}[$__rate_interval])) by (namespace,service,gotsrpc_package,gotsrpc_service,gotsrpc_func)",
-					"hide": false,
-					"interval": "",
-					"intervalFactor": 1,
-					"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}:{{gotsrpc_func}}",
-					"range": true,
-					"refId": "A"
-				}
-			],
-			"title": "Errors",
-			"type": "timeseries"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${datasource}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"mode": "palette-classic"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisGridShow": true,
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 62,
-						"gradientMode": "opacity",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
-						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineWidth": 2,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "auto",
-						"spanNulls": true,
-						"stacking": {
-							"group": "A",
-							"mode": "none"
-						},
-						"thresholdsStyle": {
-							"mode": "dashed"
-						}
-					},
-					"mappings": [],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": null
+						"options": {
+							"legend": {
+								"calcs": ["mean", "max"],
+								"displayMode": "table",
+								"placement": "bottom",
+								"showLegend": true,
+								"sortBy": "Mean",
+								"sortDesc": true
 							},
+							"tooltip": {
+								"hideZeros": false,
+								"mode": "single",
+								"sort": "none"
+							}
+						}
+					},
+					"version": "12.2.1"
+				}
+			}
+		},
+		"panel-2": {
+			"kind": "Panel",
+			"spec": {
+				"data": {
+					"kind": "QueryGroup",
+					"spec": {
+						"queries": [
 							{
-								"color": "red",
-								"value": 0.2
+								"kind": "PanelQuery",
+								"spec": {
+									"hidden": false,
+									"query": {
+										"group": "prometheus",
+										"kind": "DataQuery",
+										"spec": {
+											"editorMode": "code",
+											"exemplar": true,
+											"expr": "sum(rate(gotsrpc_execution_duration_seconds_count{namespace=~\"$namespace\", service=~\"$service\"}[$interval])) by (namespace, service, gotsrpc_package, gotsrpc_service, gotsrpc_func)",
+											"interval": "",
+											"intervalFactor": 1,
+											"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})",
+											"range": true
+										},
+										"version": "v0"
+									},
+									"refId": "A"
+								}
+							}
+						],
+						"queryOptions": {},
+						"transformations": []
+					}
+				},
+				"description": "",
+				"id": 2,
+				"links": [],
+				"title": "Rate",
+				"vizConfig": {
+					"group": "timeseries",
+					"kind": "VizConfig",
+					"spec": {
+						"fieldConfig": {
+							"defaults": {
+								"color": {
+									"mode": "palette-classic"
+								},
+								"custom": {
+									"axisBorderShow": false,
+									"axisCenteredZero": false,
+									"axisColorMode": "text",
+									"axisLabel": "",
+									"axisPlacement": "auto",
+									"barAlignment": 0,
+									"barWidthFactor": 0.6,
+									"drawStyle": "line",
+									"fillOpacity": 62,
+									"gradientMode": "opacity",
+									"hideFrom": {
+										"legend": false,
+										"tooltip": false,
+										"viz": false
+									},
+									"insertNulls": false,
+									"lineInterpolation": "linear",
+									"lineWidth": 1,
+									"pointSize": 5,
+									"scaleDistribution": {
+										"type": "linear"
+									},
+									"showPoints": "auto",
+									"showValues": false,
+									"spanNulls": false,
+									"stacking": {
+										"group": "A",
+										"mode": "normal"
+									},
+									"thresholdsStyle": {
+										"mode": "off"
+									}
+								},
+								"decimals": 2,
+								"fieldMinMax": false,
+								"thresholds": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "green",
+											"value": 0
+										},
+										{
+											"color": "red",
+											"value": 80
+										}
+									]
+								},
+								"unit": "reqps"
+							},
+							"overrides": []
+						},
+						"options": {
+							"legend": {
+								"calcs": ["mean", "max"],
+								"displayMode": "table",
+								"placement": "bottom",
+								"showLegend": true,
+								"sortBy": "Mean",
+								"sortDesc": true
+							},
+							"tooltip": {
+								"hideZeros": false,
+								"mode": "single",
+								"sort": "none"
+							}
+						}
+					},
+					"version": "12.2.1"
+				}
+			}
+		},
+		"panel-3": {
+			"kind": "Panel",
+			"spec": {
+				"data": {
+					"kind": "QueryGroup",
+					"spec": {
+						"queries": [
+							{
+								"kind": "PanelQuery",
+								"spec": {
+									"hidden": false,
+									"query": {
+										"group": "prometheus",
+										"kind": "DataQuery",
+										"spec": {
+											"editorMode": "code",
+											"exemplar": true,
+											"expr": "(\n  sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (\n    rate(\n      gotsrpc_execution_duration_seconds_count{\n        namespace=~\"$namespace\",\n        service=\"$service\",\n        gotsprc_error=\"true\"\n      }[$interval]\n    )\n  ) * 100\n  )\n/\n(\n  sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (\n    rate(\n      gotsrpc_execution_duration_seconds_count{\n        namespace=~\"$namespace\",\n        service=\"$service\",\n        gotsprc_error=\"false\"\n      }[$interval]\n    )\n  )\n)\nor\n(\n  0\n  *\n  sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (\n    rate(\n      gotsrpc_execution_duration_seconds_count{\n        namespace=~\"$namespace\",\n        service=\"$service\",\n        gotsprc_error=\"false\"\n      }[$interval]\n    )\n  )\n) > 0",
+											"interval": "",
+											"intervalFactor": 1,
+											"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})",
+											"range": true
+										},
+										"version": "v0"
+									},
+									"refId": "A"
+								}
+							}
+						],
+						"queryOptions": {},
+						"transformations": []
+					}
+				},
+				"description": "",
+				"id": 3,
+				"links": [],
+				"title": "Errors",
+				"vizConfig": {
+					"group": "timeseries",
+					"kind": "VizConfig",
+					"spec": {
+						"fieldConfig": {
+							"defaults": {
+								"color": {
+									"mode": "palette-classic"
+								},
+								"custom": {
+									"axisBorderShow": false,
+									"axisCenteredZero": false,
+									"axisColorMode": "text",
+									"axisLabel": "",
+									"axisPlacement": "auto",
+									"barAlignment": 0,
+									"barWidthFactor": 0.6,
+									"drawStyle": "line",
+									"fillOpacity": 62,
+									"gradientMode": "opacity",
+									"hideFrom": {
+										"legend": false,
+										"tooltip": false,
+										"viz": false
+									},
+									"insertNulls": false,
+									"lineInterpolation": "linear",
+									"lineWidth": 1,
+									"pointSize": 5,
+									"scaleDistribution": {
+										"type": "linear"
+									},
+									"showPoints": "auto",
+									"showValues": false,
+									"spanNulls": false,
+									"stacking": {
+										"group": "A",
+										"mode": "normal"
+									},
+									"thresholdsStyle": {
+										"mode": "area"
+									}
+								},
+								"fieldMinMax": false,
+								"noValue": "No Errors",
+								"thresholds": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "green",
+											"value": 0
+										},
+										{
+											"color": "red",
+											"value": 20
+										}
+									]
+								},
+								"unit": "percent"
+							},
+							"overrides": []
+						},
+						"options": {
+							"legend": {
+								"calcs": ["mean", "max"],
+								"displayMode": "table",
+								"placement": "bottom",
+								"showLegend": true,
+								"sortBy": "Max",
+								"sortDesc": true
+							},
+							"tooltip": {
+								"hideZeros": false,
+								"mode": "single",
+								"sort": "none"
+							}
+						}
+					},
+					"version": "12.2.1"
+				}
+			}
+		},
+		"panel-4": {
+			"kind": "Panel",
+			"spec": {
+				"data": {
+					"kind": "QueryGroup",
+					"spec": {
+						"queries": [
+							{
+								"kind": "PanelQuery",
+								"spec": {
+									"hidden": false,
+									"query": {
+										"group": "tempo",
+										"kind": "DataQuery",
+										"spec": {
+											"filters": [
+												{
+													"id": "service-name",
+													"isCustomValue": false,
+													"operator": "=~",
+													"scope": "resource",
+													"tag": "service.name",
+													"value": ["$service"]
+												},
+												{
+													"id": "span-name",
+													"isCustomValue": true,
+													"operator": "=~",
+													"scope": "span",
+													"tag": "name",
+													"value": ["GOTSRPC (.*)"],
+													"valueType": "string"
+												},
+												{
+													"id": "ee7df77b",
+													"isCustomValue": false,
+													"operator": "=~",
+													"scope": "resource",
+													"tag": "k8s.namespace.name",
+													"value": ["$namespace"],
+													"valueType": "string"
+												}
+											],
+											"limit": 10,
+											"metricsQueryType": "range",
+											"query": "{resource.k8s.namespace.name=~\"$namespace\" && resource.service.name=~\"$service\" && name=~\"GOTSRPC (.*)\"}",
+											"queryType": "traceql",
+											"serviceMapUseNativeHistograms": false,
+											"tableType": "spans"
+										},
+										"version": "v0"
+									},
+									"refId": "A"
+								}
+							}
+						],
+						"queryOptions": {},
+						"transformations": [
+							{
+								"kind": "organize",
+								"spec": {
+									"id": "organize",
+									"options": {
+										"excludeByName": {
+											"Service": true,
+											"Span ID": true,
+											"Start time": true,
+											"Trace Name": true,
+											"Trace Service": true,
+											"traceIdHidden": false
+										},
+										"includeByName": {},
+										"indexByName": {
+											"Duration": 7,
+											"Name": 0,
+											"Span ID": 5,
+											"Start time": 6,
+											"Trace Name": 8,
+											"Trace Service": 4,
+											"k8s.namespace.name": 2,
+											"service.name": 3,
+											"traceIdHidden": 1
+										},
+										"renameByName": {
+											"Duration": "",
+											"Start time": "",
+											"k8s.namespace.name": "Namespace",
+											"service.name": "Service",
+											"traceIdHidden": "Trace ID"
+										}
+									}
+								}
 							}
 						]
-					},
-					"unit": "s"
+					}
 				},
-				"overrides": []
-			},
-			"gridPos": {
-				"h": 10,
-				"w": 24,
-				"x": 0,
-				"y": 10
-			},
-			"id": 2,
-			"maxPerRow": 3,
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "bottom",
-					"showLegend": true,
-					"sortBy": "Max",
-					"sortDesc": true
-				},
-				"tooltip": {
-					"mode": "single",
-					"sort": "none"
-				}
-			},
-			"pluginVersion": "11.3.0",
-			"repeat": "quantile",
-			"repeatDirection": "h",
-			"targets": [
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${datasource}"
+				"description": "",
+				"id": 4,
+				"links": [],
+				"title": "Traces",
+				"vizConfig": {
+					"group": "table",
+					"kind": "VizConfig",
+					"spec": {
+						"fieldConfig": {
+							"defaults": {
+								"color": {
+									"mode": "thresholds"
+								},
+								"custom": {
+									"align": "auto",
+									"cellOptions": {
+										"type": "auto"
+									},
+									"footer": {
+										"reducers": []
+									},
+									"inspect": false
+								},
+								"thresholds": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "green",
+											"value": 0
+										},
+										{
+											"color": "red",
+											"value": 80
+										}
+									]
+								}
+							},
+							"overrides": [
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Name"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 178
+										}
+									]
+								}
+							]
+						},
+						"options": {
+							"cellHeight": "sm",
+							"showHeader": true
+						}
 					},
-					"editorMode": "code",
-					"exemplar": false,
-					"expr": "sum(gotsrpc_request_duration_seconds{namespace=~\"$namespace\", service=~\"$service\", gotsrpc_package=~\"$pkg\", gotsrpc_service=~\"$svc\", gotsrpc_func=~\"$fnc\",\nquantile=\"$le\"}) by (gotsrpc_package, gotsrpc_service,gotsrpc_func) ",
-					"format": "time_series",
-					"hide": false,
-					"interval": "",
-					"intervalFactor": 2,
-					"legendFormat": "{{gotsrpc_package}}.{{gotsrpc_service}}:{{gotsrpc_func}}",
-					"range": true,
-					"refId": "A"
+					"version": "12.2.1"
 				}
-			],
-			"title": "Response Time (p$le)",
-			"type": "timeseries"
+			}
 		}
-	],
+	},
+	"layout": {
+		"kind": "GridLayout",
+		"spec": {
+			"items": [
+				{
+					"kind": "GridLayoutItem",
+					"spec": {
+						"element": {
+							"kind": "ElementReference",
+							"name": "panel-2"
+						},
+						"height": 8,
+						"width": 8,
+						"x": 0,
+						"y": 0
+					}
+				},
+				{
+					"kind": "GridLayoutItem",
+					"spec": {
+						"element": {
+							"kind": "ElementReference",
+							"name": "panel-3"
+						},
+						"height": 8,
+						"width": 8,
+						"x": 8,
+						"y": 0
+					}
+				},
+				{
+					"kind": "GridLayoutItem",
+					"spec": {
+						"element": {
+							"kind": "ElementReference",
+							"name": "panel-1"
+						},
+						"height": 8,
+						"width": 8,
+						"x": 16,
+						"y": 0
+					}
+				},
+				{
+					"kind": "GridLayoutItem",
+					"spec": {
+						"element": {
+							"kind": "ElementReference",
+							"name": "panel-4"
+						},
+						"height": 12,
+						"width": 24,
+						"x": 0,
+						"y": 8
+					}
+				}
+			]
+		}
+	},
+	"links": [],
+	"liveNow": false,
 	"preload": false,
-	"refresh": "",
-	"schemaVersion": 40,
-	"tags": [
-		"Foomo",
-		"GoTSRPC"
-	],
-	"templating": {
-		"list": [
-			{
+	"tags": ["foomo", "gotsrpc"],
+	"timeSettings": {
+		"autoRefresh": "",
+		"autoRefreshIntervals": [
+			"5s",
+			"10s",
+			"30s",
+			"1m",
+			"5m",
+			"15m",
+			"30m",
+			"1h",
+			"2h",
+			"1d"
+		],
+		"fiscalYearStartMonth": 0,
+		"from": "now-15m",
+		"hideTimepicker": false,
+		"timezone": "browser",
+		"to": "now"
+	},
+	"title": "Foomo / GoTSRPC",
+	"variables": [
+		{
+			"kind": "IntervalVariable",
+			"spec": {
+				"auto": true,
+				"auto_count": 30,
+				"auto_min": "10s",
 				"current": {
-					"text": "Prometheus",
-					"value": "prometheus"
+					"text": "1m",
+					"value": "1m"
 				},
+				"hide": "dontHide",
+				"label": "⏱︎",
+				"name": "interval",
+				"options": [
+					{
+						"selected": true,
+						"text": "1m",
+						"value": "1m"
+					},
+					{
+						"selected": false,
+						"text": "3m",
+						"value": "3m"
+					},
+					{
+						"selected": false,
+						"text": "5m",
+						"value": "5m"
+					},
+					{
+						"selected": false,
+						"text": "10m",
+						"value": "10m"
+					},
+					{
+						"selected": false,
+						"text": "30m",
+						"value": "30m"
+					},
+					{
+						"selected": false,
+						"text": "1h",
+						"value": "1h"
+					}
+				],
+				"query": "1m,3m,5m,10m,30m,1h",
+				"refresh": "onTimeRangeChanged",
+				"skipUrlSync": false
+			}
+		},
+		{
+			"kind": "CustomVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"current": {
+					"text": "75",
+					"value": "0.75"
+				},
+				"hide": "dontHide",
 				"includeAll": false,
-				"name": "datasource",
-				"options": [],
-				"query": "prometheus",
-				"refresh": 1,
-				"regex": "",
-				"type": "datasource"
-			},
-			{
+				"label": "P",
+				"multi": false,
+				"name": "percentile",
+				"options": [
+					{
+						"selected": false,
+						"text": "99",
+						"value": "0.99"
+					},
+					{
+						"selected": false,
+						"text": "95",
+						"value": "0.95"
+					},
+					{
+						"selected": false,
+						"text": "90",
+						"value": "0.9"
+					},
+					{
+						"selected": true,
+						"text": "75",
+						"value": "0.75"
+					},
+					{
+						"selected": false,
+						"text": "50",
+						"value": "0.5"
+					}
+				],
+				"query": "99 : 0.99, 95 : 0.95, 90 : 0.9, 75 : 0.75, 50 : 0.5",
+				"skipUrlSync": false
+			}
+		},
+		{
+			"kind": "QueryVariable",
+			"spec": {
+				"allowCustomValue": true,
 				"current": {
-					"text": [
-						"All"
-					],
-					"value": [
-						"$__all"
-					]
+					"text": "All",
+					"value": ["$__all"]
 				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${datasource}"
-				},
-				"definition": "label_values(gotsrpc_request_duration_seconds{},namespace)",
+				"definition": "label_values(gotsrpc_execution_duration_seconds_bucket,namespace)",
+				"hide": "dontHide",
 				"includeAll": true,
+				"label": "⛴︎",
 				"multi": true,
 				"name": "namespace",
 				"options": [],
 				"query": {
-					"query": "label_values(gotsrpc_request_duration_seconds{},namespace)",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+					"group": "prometheus",
+					"kind": "DataQuery",
+					"spec": {
+						"qryType": 1,
+						"query": "label_values(gotsrpc_execution_duration_seconds_bucket,namespace)",
+						"refId": "PrometheusVariableQueryEditor-VariableQuery"
+					},
+					"version": "v0"
 				},
-				"refresh": 2,
+				"refresh": "onDashboardLoad",
 				"regex": "",
-				"sort": 1,
-				"type": "query"
-			},
-			{
+				"skipUrlSync": false,
+				"sort": "alphabeticalAsc"
+			}
+		},
+		{
+			"kind": "QueryVariable",
+			"spec": {
+				"allowCustomValue": true,
 				"current": {
-					"text": [
-						"All"
-					],
-					"value": [
-						"$__all"
-					]
+					"text": "All",
+					"value": ["$__all"]
 				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${datasource}"
-				},
-				"definition": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\"},service)",
+				"definition": "label_values(gotsrpc_execution_duration_seconds_bucket{namespace=~\"$namespace\"},service)",
+				"hide": "dontHide",
 				"includeAll": true,
+				"label": "⛵︎",
 				"multi": true,
 				"name": "service",
 				"options": [],
 				"query": {
-					"qryType": 1,
-					"query": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\"},service)",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+					"group": "prometheus",
+					"kind": "DataQuery",
+					"spec": {
+						"qryType": 1,
+						"query": "label_values(gotsrpc_execution_duration_seconds_bucket{namespace=~\"$namespace\"},service)",
+						"refId": "PrometheusVariableQueryEditor-VariableQuery"
+					},
+					"version": "v0"
 				},
-				"refresh": 2,
+				"refresh": "onDashboardLoad",
 				"regex": "",
-				"sort": 1,
-				"type": "query"
+				"skipUrlSync": false,
+				"sort": "alphabeticalAsc"
+			}
+		},
+		{
+			"datasource": {
+				"name": "prometheus"
 			},
-			{
-				"current": {
-					"text": [
-						"All"
-					],
-					"value": [
-						"$__all"
-					]
-				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${datasource}"
-				},
-				"definition": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\", service=~\"$service\"},gotsrpc_package)",
-				"includeAll": true,
-				"multi": true,
-				"name": "pkg",
-				"options": [],
-				"query": {
-					"qryType": 1,
-					"query": "label_values(gotsrpc_request_duration_seconds{namespace=~\"$namespace\", service=~\"$service\"},gotsrpc_package)",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
-				},
-				"refresh": 2,
-				"regex": "",
-				"sort": 1,
-				"type": "query"
-			},
-			{
-				"current": {
-					"text": "All",
-					"value": "$__all"
-				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${datasource}"
-				},
-				"definition": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$pkg\", namespace=~\"$namespace\", service=~\"$service\"},gotsrpc_service)",
-				"includeAll": true,
-				"multi": true,
-				"name": "svc",
-				"options": [],
-				"query": {
-					"qryType": 1,
-					"query": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$pkg\", namespace=~\"$namespace\", service=~\"$service\"},gotsrpc_service)",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
-				},
-				"refresh": 2,
-				"regex": "",
-				"type": "query"
-			},
-			{
-				"current": {
-					"text": "All",
-					"value": "$__all"
-				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${datasource}"
-				},
-				"definition": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$pkg\", namespace=~\"$namespace\", gotsrpc_service=~\"$svc\", service=~\"$service\"},gotsrpc_func)",
-				"includeAll": true,
-				"multi": true,
-				"name": "fnc",
-				"options": [],
-				"query": {
-					"qryType": 1,
-					"query": "label_values(gotsrpc_request_duration_seconds{gotsrpc_package=~\"$pkg\", namespace=~\"$namespace\", gotsrpc_service=~\"$svc\", service=~\"$service\"},gotsrpc_func)",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
-				},
-				"refresh": 2,
-				"regex": "",
-				"sort": 1,
-				"type": "query"
-			},
-			{
-				"current": {
-					"text": "0.9",
-					"value": "0.9"
-				},
-				"includeAll": false,
-				"label": "p",
-				"name": "le",
-				"options": [
+			"group": "prometheus",
+			"kind": "AdhocVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"baseFilters": [],
+				"defaultKeys": [
 					{
-						"selected": false,
-						"text": "0.99",
-						"value": "0.99"
+						"text": "pkg",
+						"value": "gotsrpc_package"
 					},
 					{
-						"selected": true,
-						"text": "0.9",
-						"value": "0.9"
+						"text": "svs",
+						"value": "gotsrpc_service"
 					},
 					{
-						"selected": false,
-						"text": "0.5",
-						"value": "0.5"
+						"text": "fnc",
+						"value": "gotsrpc_func"
 					}
 				],
-				"query": "0.99,0.9,0.5",
-				"type": "custom"
+				"filters": [],
+				"hide": "hideLabel",
+				"name": "filter",
+				"skipUrlSync": false
 			}
-		]
-	},
-	"time": {
-		"from": "now-15m",
-		"to": "now"
-	},
-	"timepicker": {},
-	"timezone": "browser",
-	"title": "Foomo GoTSRPC",
-	"uid": "foomo_gotsrpc",
-	"version": 1,
-	"weekStart": ""
+		}
+	]
 }
