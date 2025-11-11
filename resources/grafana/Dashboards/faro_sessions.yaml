@@ -1,0 +1,319 @@
+apiVersion: dashboard.grafana.app/v2beta1
+kind: Dashboard
+metadata:
+  annotations:
+    grafana.app/folder: ""
+  labels: null
+  name: grafana_faro_sessions
+  namespace: ""
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      name: Annotations & Alerts
+      query:
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: "Off"
+  editable: true
+  elements:
+    panel-1:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: "{service_name=\"faro\", app=\"$app\", kind=\"event\"} | json | k6_isK6Browser=~\"\" | event_name=~\"session_start|session_extend|session_resume\" | line_format \"{{.labels}}\""
+                    queryType: range
+                  version: v0
+                refId: sessions
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind="measurement"} | json | k6_isK6Browser=~"" [$__auto]) ) by (session_id)
+                    key: Q-a9758909-f086-4e6d-b371-e7da0b08fa1d-3
+                    queryType: instant
+                  version: v0
+                refId: errors-totalExceptions
+            queryOptions: {}
+            transformations:
+            - kind: extractFields
+              spec:
+                id: extractFields
+                options:
+                  delimiter: ","
+                  keepTime: false
+                  replace: true
+                  source: labels
+            - kind: joinByField
+              spec:
+                id: joinByField
+                options:
+                  byField: session_id
+                  mode: outer
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName: {}
+                  includeByName:
+                    Time: true
+                    Time 1: false
+                    Time 2: false
+                    "Value #errors-totalExceptions": true
+                    app: false
+                    browser_name: true
+                    browser_os: true
+                    browser_version: true
+                    labels: false
+                    page_url: true
+                    session_id: true
+                    timestamp: false
+                  indexByName:
+                    Time: 0
+                    "Value #errors-totalExceptions": 24
+                    app: 4
+                    app_name: 5
+                    browser_language: 6
+                    browser_mobile: 7
+                    browser_name: 8
+                    browser_os: 10
+                    browser_userAgent: 11
+                    browser_version: 9
+                    browser_viewportHeight: 12
+                    browser_viewportWidth: 13
+                    detected_level: 14
+                    event_domain: 15
+                    event_name: 16
+                    kind: 17
+                    kind_extracted: 18
+                    level: 19
+                    namespace: 20
+                    page_url: 3
+                    sdk_version: 21
+                    service_name: 22
+                    session_attr_previousSession: 23
+                    session_id: 2
+                    timestamp: 1
+                  renameByName:
+                    Time: Timestamp
+                    "Value #errors-totalExceptions": Measurements
+                    app: ""
+                    browser_name: Browser Name
+                    browser_os: Platform
+                    browser_userAgent: ""
+                    browser_version: Browser Version
+                    page_url: Page URL
+                    session_id: Session ID
+                    timestamp: Timestamp
+        description: ""
+        id: 1
+        links: []
+        title: Sessions
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+              overrides: []
+            options:
+              cellHeight: sm
+              showHeader: true
+          version: 12.2.0
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind="event"} | json  | k6_isK6Browser=~"" | event_name=~"session_start|session_extend|session_resume" [$__auto])) by (event_name)
+                    legendFormat: "{{event_name}} {{page_url}}"
+                    queryType: range
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: Sessions Overview
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.5
+                  drawStyle: bars
+                  fillOpacity: 100
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: never
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: normal
+                  thresholdsStyle:
+                    mode: "off"
+                decimals: 0
+                fieldMinMax: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                unit: none
+              overrides: []
+            options:
+              legend:
+                calcs:
+                - sum
+                displayMode: table
+                placement: bottom
+                showLegend: true
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.0
+  layout:
+    kind: GridLayout
+    spec:
+      items:
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-2
+          height: 9
+          width: 24
+          x: 0
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-1
+          height: 10
+          width: 24
+          x: 0
+          "y": 9
+  links: []
+  liveNow: false
+  preload: false
+  tags: []
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: browser
+    to: now
+  title: Faro / Sessions
+  variables:
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: false
+      current:
+        text: sesamy
+        value: sesamy
+      definition: ""
+      hide: dontHide
+      includeAll: false
+      label: Application
+      multi: false
+      name: app
+      options: []
+      query:
+        datasource:
+          name: loki
+        group: loki
+        kind: DataQuery
+        spec:
+          label: app
+          refId: LokiVariableQueryEditor-VariableQuery
+          stream: "{service_name=\"faro\"}"
+          type: 1
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc

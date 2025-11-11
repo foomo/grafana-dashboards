@@ -9,17 +9,17 @@ define br
 
 endef
 
-settings.yaml:
+grafanactl.yaml:
 	@echo "NOTE: Please add a settings yaml"
 	@exit 1
 
 # --- Targets -----------------------------------------------------------------
 
 # This allows us to accept extra arguments
-%: .mise
+%: .mise .lefthook
 	@:
 
-.PHONY: .mise .lefthook
+.PHONY: .mise
 # Install dependencies
 .mise: msg := $(br)$(br)Please ensure you have 'mise' installed and activated!$(br)$(br)$$ brew update$(br)$$ brew install mise$(br)$(br)See the documentation: https://mise.jdx.dev/getting-started.html$(br)$(br)
 .mise:
@@ -28,32 +28,29 @@ ifeq (, $(shell command -v mise))
 endif
 	@mise install
 
-.PHONY: .lefthook
 # Configure git hooks for lefthook
 .lefthook:
 	@lefthook install
 
 ### Tasks
 
-.PHONY: foomo.gotsrpc
-## Serve through grizzly
-foomo.gotsrpc: settings.yaml
-	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/foomo/gotsrpc.json
+.PHONY: .context
+.context: grafanactl.yaml
+ifndef CONTEXT
+	$(error $(br)$(br)CONTEXT variable is required.$(br)Usage: make [task] CONTEXT=foo$(br)$(br))
+endif
+	@grafanactl --config grafanactl.yaml config use-context ${CONTEXT}
 
-.PHONY: foomo.http-server
-## Serve through grizzly
-foomo.http-server: settings.yaml
-	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/foomo/http-server.json
+.PHONY: .resource
+.resource:
+ifndef RESOURCE
+	$(error $(br)$(br)RESOURCE variable is required.$(br)Usage: make [task] RESOURCE=foo$(br)$(br))
+endif
 
-.PHONY: foomo.squadron-releases
+.PHONY: dashboards
 ## Serve through grizzly
-foomo.squadron-releases: settings.yaml
-	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/foomo/squadron-releases.json
-
-.PHONY: nodejs.resources
-## Serve through grizzly
-nodejs.resources: settings.yaml
-	@grr serve --disable-reporting --watch --open-browser --only-spec --kind Dashboard dashboards/nodejs/resources.json
+serve: .context .resource
+	@grafanactl --config grafanactl.yaml resources serve ./${RESOURCE}
 
 ### Utils
 

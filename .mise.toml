@@ -5,3 +5,5 @@ biome = "2.3.0"
 lefthook = "2.0.0"
 # https://github.com/grafana/grizzly/releases
 "github:grafana/grizzly" = "0.7.1"
+# https://github.com/grafana/grafanactl/releases
+"github:grafana/grafanactl" = "0.1.6"
