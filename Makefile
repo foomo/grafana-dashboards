@@ -34,6 +34,55 @@ endif
 
 ### Tasks
 
+.PHONY: check
+## Run lint & tests
+check: tidy lint test
+
+.PHONY: tidy
+## Run go mod tidy
+tidy:
+	@echo "〉go mod tidy"
+	@go mod tidy
+
+.PHONY: lint
+## Run linter
+lint:
+	@echo "〉golangci-lint run"
+	@golangci-lint run
+
+.PHONY: lint.fix
+## Fix lint violations
+lint.fix:
+	@echo "〉golangci-lint run fix"
+	@golangci-lint run --fix
+
+.PHONY: test
+## Run tests
+test:
+	@echo "〉go test"
+	@# see https://github.com/pterm/pterm/issues/482
+	@GO_TEST_TAGS=-skip go test -tags=safe -coverprofile=coverage.out
+	@#GO_TEST_TAGS=-skip go test -tags=safe -coverprofile=coverage.out -race
+
+.PHONY: outdated
+## Show outdated direct dependencies
+outdated:
+	@echo "〉go mod outdated"
+	@go list -u -m -json all | go-mod-outdated -update -direct
+
+.PHONY: install
+## Install binary
+install:
+	@echo "〉installing ${GOPATH}/bin/squadron"
+	@go build -tags=safe -o ${GOPATH}/bin/squadron cmd/main.go
+
+.PHONY: build
+## Build binary
+build:
+	@mkdir -p bin
+	@echo "〉building bin/squadron"
+	@go build -tags=safe -o bin/squadron cmd/main.go
+
 .PHONY: .context
 .context: grafanactl.yaml
 ifndef CONTEXT
@@ -51,6 +100,16 @@ endif
 ## Serve through grizzly
 serve: .context .resource
 	@grafanactl --config grafanactl.yaml resources serve ./${RESOURCE}
+
+.PHONY: dashboards
+## Serve through grizzly
+foo: .context .resource
+	@grafanactl --config grafanactl.yaml resources serve --script "go run . generate --raw" --watch .
+
+.PHONY: dashboards
+## Serve through grizzly
+list: .context
+	@grafanactl --config grafanactl.yaml resources list
 
 ### Utils
 

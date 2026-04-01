@@ -491,8 +491,8 @@ spec:
   liveNow: false
   preload: false
   tags:
-    - foomo
-    - gotsrpc
+  - foomo
+  - gotsrpc
   timeSettings:
     autoRefresh: ""
     autoRefreshIntervals:
@@ -550,15 +550,15 @@ spec:
     spec:
       allowCustomValue: true
       current:
-        text: "99"
-        value: "0.99"
+        text: "75"
+        value: "0.75"
       hide: dontHide
       includeAll: false
       label: P
       multi: false
       name: percentile
       options:
-      - selected: true
+      - selected: false
         text: "99"
         value: "0.99"
       - selected: false
@@ -567,7 +567,7 @@ spec:
       - selected: false
         text: "90"
         value: "0.9"
-      - selected: false
+      - selected: true
         text: "75"
         value: "0.75"
       - selected: false
@@ -579,8 +579,10 @@ spec:
     spec:
       allowCustomValue: true
       current:
-        text: ""
-        value: ""
+        text:
+        - All
+        value:
+        - $__all
       definition: label_values(gotsrpc_execution_duration_seconds_bucket,namespace)
       hide: dontHide
       includeAll: true
@@ -604,8 +606,10 @@ spec:
     spec:
       allowCustomValue: true
       current:
-        text: ""
-        value: ""
+        text:
+        - All
+        value:
+        - $__all
       definition: label_values(gotsrpc_execution_duration_seconds_bucket{namespace=~"$namespace"},service)
       hide: dontHide
       includeAll: true
@@ -639,14 +643,7 @@ spec:
         value: gotsrpc_service
       - text: fnc
         value: gotsrpc_func
-      filters:
-      - condition: ""
-        key: gotsrpc_service
-        keyLabel: svs
-        operator: =
-        value: Service
-        valueLabels:
-        - Service
+      filters: []
       hide: hideLabel
       name: filter
       skipUrlSync: false
