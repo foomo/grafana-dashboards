@@ -1,0 +1,649 @@
+apiVersion: dashboard.grafana.app/v2beta1
+kind: Dashboard
+metadata:
+  annotations:
+    grafana.app/folder: ""
+  labels: null
+  name: foomo_gotsrpc
+  namespace: ""
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      name: Annotations & Alerts
+      query:
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: Crosshair
+  editable: true
+  elements:
+    panel-1:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    editorMode: code
+                    exemplar: true
+                    expr: histogram_quantile($percentile, sum(rate(gotsrpc_execution_duration_seconds_bucket{namespace=~"$namespace", service=~"$service"}[$interval])) by (le, gotsrpc_package, gotsrpc_service, gotsrpc_func))
+                    legendFormat: "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})"
+                    range: true
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 1
+        links: []
+        title: Duration
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 0
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: none
+                  thresholdsStyle:
+                    mode: area
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: orange
+                    value: 0.2
+                  - color: dark-red
+                    value: 0.5
+                unit: s
+              overrides: []
+            options:
+              legend:
+                calcs:
+                - mean
+                - max
+                displayMode: table
+                placement: bottom
+                showLegend: true
+                sortBy: Mean
+                sortDesc: true
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.1
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    editorMode: code
+                    exemplar: true
+                    expr: sum(rate(gotsrpc_execution_duration_seconds_count{namespace=~"$namespace", service=~"$service"}[$interval])) by (namespace, service, gotsrpc_package, gotsrpc_service, gotsrpc_func)
+                    interval: ""
+                    intervalFactor: 1
+                    legendFormat: "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})"
+                    range: true
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: Rate
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 62
+                  gradientMode: opacity
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: normal
+                  thresholdsStyle:
+                    mode: "off"
+                decimals: 2
+                fieldMinMax: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+                unit: reqps
+              overrides: []
+            options:
+              legend:
+                calcs:
+                - mean
+                - max
+                displayMode: table
+                placement: bottom
+                showLegend: true
+                sortBy: Mean
+                sortDesc: true
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.1
+    panel-3:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    editorMode: code
+                    exemplar: true
+                    expr: |-
+                      (
+                        sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (
+                          rate(
+                            gotsrpc_execution_duration_seconds_count{
+                              namespace=~"$namespace",
+                              service="$service",
+                              gotsprc_error="true"
+                            }[$interval]
+                          )
+                        ) * 100
+                        )
+                      /
+                      (
+                        sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (
+                          rate(
+                            gotsrpc_execution_duration_seconds_count{
+                              namespace=~"$namespace",
+                              service="$service",
+                              gotsprc_error="false"
+                            }[$interval]
+                          )
+                        )
+                      )
+                      or
+                      (
+                        0
+                        *
+                        sum by(gotsrpc_package, gotsrpc_service, gotsrpc_func) (
+                          rate(
+                            gotsrpc_execution_duration_seconds_count{
+                              namespace=~"$namespace",
+                              service="$service",
+                              gotsprc_error="false"
+                            }[$interval]
+                          )
+                        )
+                      ) > 0
+                    interval: ""
+                    intervalFactor: 1
+                    legendFormat: "{{gotsrpc_package}}.{{gotsrpc_service}}.({{gotsrpc_func}})"
+                    range: true
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 3
+        links: []
+        title: Errors
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 62
+                  gradientMode: opacity
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: normal
+                  thresholdsStyle:
+                    mode: area
+                fieldMinMax: false
+                noValue: No Errors
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 20
+                unit: percent
+              overrides: []
+            options:
+              legend:
+                calcs:
+                - mean
+                - max
+                displayMode: table
+                placement: bottom
+                showLegend: true
+                sortBy: Max
+                sortDesc: true
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.1
+    panel-4:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: tempo
+                  kind: DataQuery
+                  spec:
+                    filters:
+                    - id: service-name
+                      isCustomValue: false
+                      operator: =~
+                      scope: resource
+                      tag: service.name
+                      value:
+                      - $service
+                    - id: span-name
+                      isCustomValue: true
+                      operator: =~
+                      scope: span
+                      tag: name
+                      value:
+                      - GOTSRPC (.*)
+                      valueType: string
+                    - id: ee7df77b
+                      isCustomValue: false
+                      operator: =~
+                      scope: resource
+                      tag: k8s.namespace.name
+                      value:
+                      - $namespace
+                      valueType: string
+                    limit: 10
+                    metricsQueryType: range
+                    query: "{resource.k8s.namespace.name=~\"$namespace\" && resource.service.name=~\"$service\" && name=~\"GOTSRPC (.*)\"}"
+                    queryType: traceql
+                    serviceMapUseNativeHistograms: false
+                    tableType: spans
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations:
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName:
+                    Service: true
+                    Span ID: true
+                    Start time: true
+                    Trace Name: true
+                    Trace Service: true
+                    traceIdHidden: false
+                  includeByName: {}
+                  indexByName:
+                    Duration: 7
+                    Name: 0
+                    Span ID: 5
+                    Start time: 6
+                    Trace Name: 8
+                    Trace Service: 4
+                    k8s.namespace.name: 2
+                    service.name: 3
+                    traceIdHidden: 1
+                  renameByName:
+                    Duration: ""
+                    Start time: ""
+                    k8s.namespace.name: Namespace
+                    service.name: Service
+                    traceIdHidden: Trace ID
+        description: ""
+        id: 4
+        links: []
+        title: Traces
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+              overrides:
+              - matcher:
+                  id: byName
+                  options: Name
+                properties:
+                - id: custom.width
+                  value: 178
+            options:
+              cellHeight: sm
+              showHeader: true
+          version: 12.2.1
+  layout:
+    kind: GridLayout
+    spec:
+      items:
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-2
+          height: 8
+          width: 8
+          x: 0
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-3
+          height: 8
+          width: 8
+          x: 8
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-1
+          height: 8
+          width: 8
+          x: 16
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-4
+          height: 12
+          width: 24
+          x: 0
+          "y": 8
+  links: []
+  liveNow: false
+  preload: false
+  tags:
+  - foomo
+  - gotsrpc
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-15m
+    hideTimepicker: false
+    timezone: browser
+    to: now
+  title: GoTSRPC v2
+  variables:
+  - kind: IntervalVariable
+    spec:
+      auto: true
+      auto_count: 30
+      auto_min: 10s
+      current:
+        text: 1m
+        value: 1m
+      hide: dontHide
+      label: ⏱︎
+      name: interval
+      options:
+      - selected: true
+        text: 1m
+        value: 1m
+      - selected: false
+        text: 3m
+        value: 3m
+      - selected: false
+        text: 5m
+        value: 5m
+      - selected: false
+        text: 10m
+        value: 10m
+      - selected: false
+        text: 30m
+        value: 30m
+      - selected: false
+        text: 1h
+        value: 1h
+      query: 1m,3m,5m,10m,30m,1h
+      refresh: onTimeRangeChanged
+      skipUrlSync: false
+  - kind: CustomVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: "75"
+        value: "0.75"
+      hide: dontHide
+      includeAll: false
+      label: P
+      multi: false
+      name: percentile
+      options:
+      - selected: false
+        text: "99"
+        value: "0.99"
+      - selected: false
+        text: "95"
+        value: "0.95"
+      - selected: false
+        text: "90"
+        value: "0.9"
+      - selected: true
+        text: "75"
+        value: "0.75"
+      - selected: false
+        text: "50"
+        value: "0.5"
+      query: "99 : 0.99, 95 : 0.95, 90 : 0.9, 75 : 0.75, 50 : 0.5"
+      skipUrlSync: false
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text:
+        - All
+        value:
+        - $__all
+      definition: label_values(gotsrpc_execution_duration_seconds_bucket,namespace)
+      hide: dontHide
+      includeAll: true
+      label: ⛴︎
+      multi: true
+      name: namespace
+      options: []
+      query:
+        group: prometheus
+        kind: DataQuery
+        spec:
+          qryType: 1
+          query: label_values(gotsrpc_execution_duration_seconds_bucket,namespace)
+          refId: PrometheusVariableQueryEditor-VariableQuery
+        version: v0
+      refresh: onDashboardLoad
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text:
+        - All
+        value:
+        - $__all
+      definition: label_values(gotsrpc_execution_duration_seconds_bucket{namespace=~"$namespace"},service)
+      hide: dontHide
+      includeAll: true
+      label: ⛵︎
+      multi: true
+      name: service
+      options: []
+      query:
+        group: prometheus
+        kind: DataQuery
+        spec:
+          qryType: 1
+          query: label_values(gotsrpc_execution_duration_seconds_bucket{namespace=~"$namespace"},service)
+          refId: PrometheusVariableQueryEditor-VariableQuery
+        version: v0
+      refresh: onDashboardLoad
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - datasource:
+      name: prometheus
+    group: prometheus
+    kind: AdhocVariable
+    spec:
+      allowCustomValue: true
+      baseFilters: []
+      defaultKeys:
+      - text: pkg
+        value: gotsrpc_package
+      - text: svs
+        value: gotsrpc_service
+      - text: fnc
+        value: gotsrpc_func
+      filters: []
+      hide: hideLabel
+      name: filter
+      skipUrlSync: false

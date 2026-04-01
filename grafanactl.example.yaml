@@ -1,0 +1,8 @@
+contexts:
+  example:
+    grafana:
+      org-id: 1
+      user: admin
+      server: http://localhost:3000
+      password: xxxxxxxxxxxxxxxxxxxxx
+current-context: example

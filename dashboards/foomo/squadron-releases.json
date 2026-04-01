@@ -1,32 +1,447 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations \u0026 Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
-  "description": "Foomo Squadron Releases",
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "id": 1,
+	"annotations": [
+		{
+			"kind": "AnnotationQuery",
+			"spec": {
+				"builtIn": true,
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"query": {
+					"group": "grafana",
+					"kind": "DataQuery",
+					"spec": {},
+					"version": "v0"
+				}
+			}
+		}
+	],
+	"cursorSync": "Off",
+	"description": "Foomo / Squadron Releases",
+	"editable": true,
+	"elements": {
+		"panel-2": {
+			"kind": "Panel",
+			"spec": {
+				"data": {
+					"kind": "QueryGroup",
+					"spec": {
+						"queries": [
+							{
+								"kind": "PanelQuery",
+								"spec": {
+									"hidden": false,
+									"query": {
+										"datasource": {
+											"name": "prometheus"
+										},
+										"group": "prometheus",
+										"kind": "DataQuery",
+										"spec": {
+											"editorMode": "code",
+											"exemplar": false,
+											"expr": "min(helm_chart_info{chart=~\"$chart\", namespace=~\"$namespace\", release=~\"$release\"}) by (updated, namespace, chart, release, description, version) != 2",
+											"format": "table",
+											"instant": true,
+											"legendFormat": "__auto",
+											"range": false
+										},
+										"version": "v0"
+									},
+									"refId": "A"
+								}
+							}
+						],
+						"queryOptions": {},
+						"transformations": [
+							{
+								"kind": "seriesToRows",
+								"spec": {
+									"id": "seriesToRows",
+									"options": {
+										"reducers": []
+									}
+								}
+							},
+							{
+								"kind": "extractFields",
+								"spec": {
+									"id": "extractFields",
+									"options": {
+										"delimiter": ",",
+										"format": "json",
+										"jsonPaths": [
+											{
+												"alias": "",
+												"path": "squadron"
+											},
+											{
+												"alias": "",
+												"path": "user"
+											},
+											{
+												"alias": "",
+												"path": "commit"
+											},
+											{
+												"alias": "",
+												"path": "branch"
+											}
+										],
+										"keepTime": false,
+										"replace": false,
+										"source": "description"
+									}
+								}
+							},
+							{
+								"kind": "organize",
+								"spec": {
+									"id": "organize",
+									"options": {
+										"excludeByName": {
+											"Time": true,
+											"chart": true,
+											"description": true,
+											"version": true
+										},
+										"includeByName": {},
+										"indexByName": {
+											"Time": 0,
+											"Value": 11,
+											"branch": 10,
+											"chart": 3,
+											"commit": 9,
+											"description": 6,
+											"namespace": 2,
+											"release": 4,
+											"squadron": 7,
+											"updated": 1,
+											"user": 8,
+											"version": 5
+										},
+										"renameByName": {
+											"Value": "Status",
+											"branch": "Branch",
+											"chart": "Chart",
+											"commit": "Commit",
+											"description": "DESCRIPTION",
+											"namespace": "Namespace",
+											"release": "Release",
+											"squadron": "Squadron",
+											"updated": "Update",
+											"user": "User",
+											"version": ""
+										}
+									}
+								}
+							}
+						]
+					}
+				},
+				"description": "",
+				"id": 2,
+				"links": [],
+				"title": "Releases",
+				"vizConfig": {
+					"group": "table",
+					"kind": "VizConfig",
+					"spec": {
+						"fieldConfig": {
+							"defaults": {
+								"color": {
+									"mode": "thresholds"
+								},
+								"custom": {
+									"align": "auto",
+									"cellOptions": {
+										"type": "auto"
+									},
+									"filterable": true,
+									"footer": {
+										"reducers": []
+									},
+									"inspect": false
+								},
+								"decimals": 2,
+								"displayName": "",
+								"mappings": [
+									{
+										"options": {
+											"0": {
+												"color": "yellow",
+												"index": 0,
+												"text": "Unknown"
+											},
+											"1": {
+												"color": "green",
+												"index": 1,
+												"text": "Deployed"
+											},
+											"2": {
+												"color": "yellow",
+												"index": 2,
+												"text": "Deleted"
+											},
+											"3": {
+												"color": "yellow",
+												"index": 3,
+												"text": "Superseded"
+											},
+											"5": {
+												"color": "yellow",
+												"index": 5,
+												"text": "Deleting"
+											},
+											"6": {
+												"color": "orange",
+												"index": 6,
+												"text": "Pending Install"
+											},
+											"7": {
+												"color": "orange",
+												"index": 7,
+												"text": "Pending Upgrade"
+											},
+											"8": {
+												"color": "orange",
+												"index": 8,
+												"text": "Pending Rollback"
+											},
+											"-1": {
+												"color": "red",
+												"index": 4,
+												"text": "Failed"
+											}
+										},
+										"type": "value"
+									}
+								],
+								"thresholds": {
+									"mode": "absolute",
+									"steps": [
+										{
+											"color": "green",
+											"value": 0
+										},
+										{
+											"color": "red",
+											"value": 80
+										}
+									]
+								},
+								"unit": "short"
+							},
+							"overrides": [
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "updated"
+									},
+									"properties": [
+										{
+											"id": "custom.align"
+										},
+										{
+											"id": "custom.cellOptions",
+											"value": {
+												"type": "auto"
+											}
+										},
+										{
+											"id": "unit",
+											"value": "dateTimeAsSystem"
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Value"
+									},
+									"properties": [
+										{
+											"id": "unit",
+											"value": "short"
+										},
+										{
+											"id": "decimals",
+											"value": 0
+										},
+										{
+											"id": "custom.cellOptions",
+											"value": {
+												"type": "color-background"
+											}
+										},
+										{
+											"id": "custom.align",
+											"value": "center"
+										},
+										{
+											"id": "thresholds",
+											"value": {
+												"mode": "absolute",
+												"steps": [
+													{
+														"color": "rgba(245, 54, 54, 0.9)",
+														"value": 0
+													},
+													{
+														"color": "#629e51",
+														"value": 0
+													},
+													{
+														"color": "#1f78c1",
+														"value": 2
+													}
+												]
+											}
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "STATUS"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 137
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "RELEASE"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 299
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "UPDATED"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 175
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "NAMESPACE"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 226
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Commit"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 118
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Deployed-By"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 172
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Branch"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 276
+										}
+									]
+								},
+								{
+									"matcher": {
+										"id": "byName",
+										"options": "Managed-By"
+									},
+									"properties": [
+										{
+											"id": "custom.width",
+											"value": 129
+										}
+									]
+								}
+							]
+						},
+						"options": {
+							"cellHeight": "sm",
+							"showHeader": true,
+							"sortBy": [
+								{
+									"desc": false,
+									"displayName": "NAMESPACE"
+								}
+							]
+						}
+					},
+					"version": "12.2.1"
+				}
+			}
+		}
+	},
+	"layout": {
+		"kind": "GridLayout",
+		"spec": {
+			"items": [
+				{
+					"kind": "GridLayoutItem",
+					"spec": {
+						"element": {
+							"kind": "ElementReference",
+							"name": "panel-2"
+						},
+						"height": 21,
+						"width": 24,
+						"x": 0,
+						"y": 0
+					}
+				}
+			]
+		}
+	},
 	"links": [
 		{
 			"asDropdown": false,
 			"icon": "external link",
 			"includeVars": false,
 			"keepTime": false,
-			"tags": [],
+			"tags": ["foomo"],
 			"targetBlank": false,
 			"title": "Edit on GitHub",
 			"tooltip": "",
@@ -34,487 +449,142 @@
 			"url": "https://github.com/foomo/grafana-dashboards/blob/main/dashboards/foomo/squadron-releases.json"
 		}
 	],
-  "panels": [
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": true,
-            "inspect": false
-          },
-          "decimals": 2,
-          "displayName": "",
-          "mappings": [
-            {
-              "options": {
-                "-1": {
-                  "color": "red",
-                  "index": 4,
-                  "text": "Failed"
-                },
-                "0": {
-                  "color": "yellow",
-                  "index": 0,
-                  "text": "Unknown"
-                },
-                "1": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "Deployed"
-                },
-                "2": {
-                  "color": "yellow",
-                  "index": 2,
-                  "text": "Deleted"
-                },
-                "3": {
-                  "color": "yellow",
-                  "index": 3,
-                  "text": "Superseded"
-                },
-                "5": {
-                  "color": "yellow",
-                  "index": 5,
-                  "text": "Deleting"
-                },
-                "6": {
-                  "color": "orange",
-                  "index": 6,
-                  "text": "Pending Install"
-                },
-                "7": {
-                  "color": "orange",
-                  "index": 7,
-                  "text": "Pending Upgrade"
-                },
-                "8": {
-                  "color": "orange",
-                  "index": 8,
-                  "text": "Pending Rollback"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "updated"
-            },
-            "properties": [
-              {
-                "id": "custom.align"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "auto"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "dateTimeAsSystem"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "rgba(245, 54, 54, 0.9)",
-                      "value": null
-                    },
-                    {
-                      "color": "#629e51",
-                      "value": 0
-                    },
-                    {
-                      "color": "#1f78c1",
-                      "value": 2
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "STATUS"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 137
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "RELEASE"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 299
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "UPDATED"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 175
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "NAMESPACE"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 226
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Commit"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 118
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Deployed-By"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 172
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Branch"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 276
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Managed-By"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 129
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 21,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "NAMESPACE"
-          }
-        ]
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "min(helm_chart_info{chart=~\"$chart\", namespace=~\"$namespace\", release=~\"$release\"}) by (updated, namespace, chart, release, description, version) != 2",
-          "format": "table",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Releases",
-      "transformations": [
-        {
-          "id": "seriesToRows",
-          "options": {
-            "reducers": []
-          }
-        },
-        {
-          "id": "extractFields",
-          "options": {
-            "format": "json",
-            "jsonPaths": [
-              {
-                "alias": "Managed-By",
-                "path": "managedBy"
-              },
-              {
-                "alias": "Deployed-By",
-                "path": "deployedBy"
-              },
-              {
-                "alias": "Commit",
-                "path": "gitCommit"
-              },
-              {
-                "alias": "Branch",
-                "path": "gitBranch"
-              }
-            ],
-            "keepTime": false,
-            "replace": false,
-            "source": "description"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "chart": true,
-              "description": true,
-              "version": true
-            },
-            "includeByName": {},
-            "indexByName": {
-              "Branch": 10,
-              "Commit": 9,
-              "Deployed-By": 8,
-              "Managed-By": 7,
-              "Time": 0,
-              "Value": 11,
-              "chart": 3,
-              "description": 6,
-              "namespace": 2,
-              "release": 4,
-              "updated": 1,
-              "version": 5
-            },
-            "renameByName": {
-              "Value": "STATUS",
-              "chart": "CHART",
-              "description": "DESCRIPTION",
-              "namespace": "NAMESPACE",
-              "release": "RELEASE",
-              "updated": "UPDATED",
-              "version": ""
-            }
-          }
-        }
-      ],
-      "type": "table"
-    }
-  ],
-  "preload": false,
-  "refresh": "",
-  "schemaVersion": 40,
-  "tags": [
-    "Foomo",
-    "Squadron"
-  ],
-  "templating": {
-    "list": [
-      {
-        "current": {
-          "text": "Prometheus",
-          "value": "prometheus"
-        },
-        "description": "",
-        "includeAll": false,
-        "name": "datasource",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "regex": "",
-        "type": "datasource"
-      },
-      {
-        "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "definition": "",
-        "includeAll": true,
-        "multi": true,
-        "name": "chart",
-        "options": [],
-        "query": "label_values(helm_chart_info, chart)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "definition": "",
-        "includeAll": true,
-        "multi": true,
-        "name": "namespace",
-        "options": [],
-        "query": "label_values(helm_chart_info, namespace)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "definition": "",
-        "includeAll": true,
-        "multi": true,
-        "name": "release",
-        "options": [],
-        "query": "label_values(helm_chart_info, release)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "filters": [],
-        "name": "Filters",
-        "type": "adhoc"
-      }
-    ]
-  },
-  "time": {
-    "from": "now-30m",
-    "to": "now"
-  },
-  "timepicker": {},
-  "timezone": "browser",
-  "title": "Foomo Squadron Releases",
-  "uid": "foomo_squadron_releases",
-  "version": 1,
-  "weekStart": ""
+	"liveNow": false,
+	"preload": false,
+	"tags": ["foomo", "squadron", "releases"],
+	"timeSettings": {
+		"autoRefresh": "",
+		"autoRefreshIntervals": [
+			"5s",
+			"10s",
+			"30s",
+			"1m",
+			"5m",
+			"15m",
+			"30m",
+			"1h",
+			"2h",
+			"1d"
+		],
+		"fiscalYearStartMonth": 0,
+		"from": "now-30m",
+		"hideTimepicker": false,
+		"timezone": "browser",
+		"to": "now"
+	},
+	"title": "Foomo Squadron Releases",
+	"variables": [
+		{
+			"kind": "QueryVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"current": {
+					"text": ["squadron-sesamy-site"],
+					"value": ["squadron-sesamy-site"]
+				},
+				"definition": "",
+				"hide": "dontHide",
+				"includeAll": true,
+				"label": "⛴︎",
+				"multi": true,
+				"name": "namespace",
+				"options": [],
+				"query": {
+					"datasource": {
+						"name": "prometheus"
+					},
+					"group": "prometheus",
+					"kind": "DataQuery",
+					"spec": {
+						"__legacyStringValue": "label_values(helm_chart_info, namespace)"
+					},
+					"version": "v0"
+				},
+				"refresh": "onTimeRangeChanged",
+				"regex": "",
+				"skipUrlSync": false,
+				"sort": "alphabeticalAsc"
+			}
+		},
+		{
+			"kind": "QueryVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"current": {
+					"text": ["All"],
+					"value": ["$__all"]
+				},
+				"definition": "",
+				"hide": "dontHide",
+				"includeAll": true,
+				"label": "⛵︎",
+				"multi": true,
+				"name": "release",
+				"options": [],
+				"query": {
+					"datasource": {
+						"name": "prometheus"
+					},
+					"group": "prometheus",
+					"kind": "DataQuery",
+					"spec": {
+						"__legacyStringValue": "label_values(helm_chart_info, release)"
+					},
+					"version": "v0"
+				},
+				"refresh": "onTimeRangeChanged",
+				"regex": "",
+				"skipUrlSync": false,
+				"sort": "alphabeticalAsc"
+			}
+		},
+		{
+			"kind": "QueryVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"current": {
+					"text": ["All"],
+					"value": ["$__all"]
+				},
+				"definition": "",
+				"hide": "dontHide",
+				"includeAll": true,
+				"multi": true,
+				"name": "chart",
+				"options": [],
+				"query": {
+					"datasource": {
+						"name": "prometheus"
+					},
+					"group": "prometheus",
+					"kind": "DataQuery",
+					"spec": {
+						"__legacyStringValue": "label_values(helm_chart_info, chart)"
+					},
+					"version": "v0"
+				},
+				"refresh": "onTimeRangeChanged",
+				"regex": "",
+				"skipUrlSync": false,
+				"sort": "alphabeticalAsc"
+			}
+		},
+		{
+			"datasource": {
+				"name": "prometheus"
+			},
+			"group": "prometheus",
+			"kind": "AdhocVariable",
+			"spec": {
+				"allowCustomValue": true,
+				"baseFilters": [],
+				"defaultKeys": [],
+				"filters": [],
+				"hide": "hideLabel",
+				"label": "",
+				"name": "filters",
+				"skipUrlSync": false
+			}
+		}
+	]
 }

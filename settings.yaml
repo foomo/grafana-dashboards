@@ -1,0 +1,10 @@
+apiversion: v1alpha1
+current-context: default
+contexts:
+  default:
+    name: default
+    grafana:
+      user: admin
+      url: http://localhost:8080
+      token: "DHtRW6DwrxT4FW-upviXubG!YDG2YH"
+    output-format: json

@@ -1,0 +1,468 @@
+apiVersion: dashboard.grafana.app/v2beta1
+kind: Dashboard
+metadata:
+  annotations:
+    grafana.app/folder: ""
+  labels: null
+  name: grafana_faro_errors
+  namespace: ""
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      name: Annotations & Alerts
+      query:
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: "Off"
+  editable: true
+  elements:
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind=~"measurement|exception"} |~ `"ttfb":|"kind":"exception"` | json  | k6_isK6Browser=~"" [$__auto])) by (app, kind)
+                    legendFormat: "{{kind}}"
+                    queryType: range
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: Page Loads & Errors
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.5
+                  drawStyle: bars
+                  fillOpacity: 100
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: never
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: normal
+                  thresholdsStyle:
+                    mode: "off"
+                decimals: 0
+                fieldMinMax: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                unit: none
+              overrides:
+              - matcher:
+                  id: byRegexp
+                  options: /measurement/
+                properties:
+                - id: displayName
+                  value: Page Load
+                - id: color
+                  value:
+                    fixedColor: blue
+                    mode: fixed
+              - matcher:
+                  id: byRegexp
+                  options: /exception/
+                properties:
+                - id: displayName
+                  value: Errors
+                - id: color
+                  value:
+                    fixedColor: red
+                    mode: fixed
+            options:
+              legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: true
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.0
+    panel-3:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: topk(10, count(count_over_time({service_name="faro", kind="exception", app="$app"} | json [$__range])) by (page_url))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations:
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName:
+                    Time: true
+                  indexByName: {}
+                  renameByName:
+                    "Value #A": Count
+                    page_url: URL
+                    value: Error
+        description: ""
+        id: 3
+        links: []
+        title: Top Errors by Page URLs
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+              overrides:
+              - matcher:
+                  id: byName
+                  options: Count
+                properties:
+                - id: custom.width
+                  value: 100
+            options:
+              cellHeight: sm
+              showHeader: true
+              sortBy:
+              - desc: true
+                displayName: Count
+          version: 12.2.0
+    panel-4:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: topk(10, count by (browser_name, browser_version) (count_over_time({service_name="faro", kind="exception", app="$app"} | json [$__range])))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations:
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName:
+                    Time: true
+                  indexByName: {}
+                  renameByName:
+                    "Value #A": Count
+                    browser_name: Browser
+                    browser_version: Version
+                    page_url: URL
+                    value: Error
+        description: ""
+        id: 4
+        links: []
+        title: Top Errors by Browsers
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+              overrides:
+              - matcher:
+                  id: byName
+                  options: Version
+                properties:
+                - id: custom.width
+                  value: 150
+              - matcher:
+                  id: byName
+                  options: Errors
+                properties:
+                - id: custom.width
+                  value: 100
+            options:
+              cellHeight: sm
+              showHeader: true
+              sortBy:
+              - desc: true
+                displayName: Count
+          version: 12.2.0
+    panel-5:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: topk(10, count(count_over_time({service_name="faro", kind="exception", app="$app"} | json [$__range])) by (value))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations:
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName:
+                    Time: true
+                  indexByName: {}
+                  renameByName:
+                    "Value #A": Count
+                    value: Error
+        description: ""
+        id: 5
+        links: []
+        title: Top Errors
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: red
+                    value: 80
+              overrides:
+              - matcher:
+                  id: byName
+                  options: Count
+                properties:
+                - id: custom.width
+                  value: 100
+            options:
+              cellHeight: sm
+              showHeader: true
+              sortBy:
+              - desc: true
+                displayName: Count
+          version: 12.2.0
+  layout:
+    kind: GridLayout
+    spec:
+      items:
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-2
+          height: 7
+          width: 24
+          x: 0
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-5
+          height: 11
+          width: 8
+          x: 0
+          "y": 7
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-3
+          height: 11
+          width: 8
+          x: 8
+          "y": 7
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-4
+          height: 11
+          width: 8
+          x: 16
+          "y": 7
+  links:
+  - asDropdown: false
+    icon: external link
+    includeVars: true
+    keepTime: true
+    tags:
+    - grafana
+    - faro
+    targetBlank: true
+    title: Grafana Faro
+    tooltip: ""
+    type: dashboards
+    url: ""
+  liveNow: false
+  preload: false
+  tags:
+  - grafana
+  - faro
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: browser
+    to: now
+  title: Grafana Faro / Errors
+  variables:
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: sesamy
+        value: sesamy
+      definition: ""
+      hide: dontHide
+      includeAll: false
+      label: Application
+      multi: false
+      name: app
+      options: []
+      query:
+        datasource:
+          name: loki
+        group: loki
+        kind: DataQuery
+        spec:
+          label: app
+          refId: LokiVariableQueryEditor-VariableQuery
+          stream: "{service_name=\"faro\"}"
+          type: 1
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc

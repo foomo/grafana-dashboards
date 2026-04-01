@@ -1,0 +1,912 @@
+apiVersion: dashboard.grafana.app/v2beta1
+kind: Dashboard
+metadata:
+  name: grafana_faro_http
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      name: Annotations & Alerts
+      query:
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: "Off"
+  editable: true
+  elements:
+    panel-10:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, ({service_name="faro", app="$app", kind="event"} |= `"event_name":"faro.performance.resource"` |~ `"event_data_initiatorType":"(fetch|xmlhttprequest)"` | json  | k6_isK6Browser=~"" | line_format "{{.event_data_name}}" | pattern "<_>://<event_data_http_host>/<path>" | unwrap event_data_transferSize [$__auto]))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 10
+        links: []
+        title: Transfer Size
+        vizConfig:
+          group: stat
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                noValue: "0"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: blue
+                    value: 0
+                unit: bytes
+              overrides: []
+            options:
+              colorMode: value
+              graphMode: none
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                - mean
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto
+              wideLayout: true
+          version: 12.2.0
+    panel-11:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(rate({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" [$__auto]))
+                    queryType: range
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 11
+        links: []
+        title: Rate
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 0
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: none
+                  thresholdsStyle:
+                    mode: "off"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                unit: reqps
+              overrides: []
+            options:
+              legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: false
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.0
+    panel-12:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: avg(quantile_over_time($percentile, ({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | unwrap event_data_duration_ns [$__auto])))
+                    queryType: range
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 12
+        links: []
+        title: Duration
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 0
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: none
+                  thresholdsStyle:
+                    mode: "off"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                unit: ns
+              overrides: []
+            options:
+              legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: false
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.0
+    panel-13:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: |-
+                      (sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | (event_data_http_status_code >= 400 and event_data_http_status_code < 600) or event_data_http_status_code = 0 [$__auto]))) or on() vector(0)
+                      /
+                      sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" [$__auto]))
+                    queryType: range
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 13
+        links: []
+        title: Errors
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: palette-classic
+                custom:
+                  axisBorderShow: false
+                  axisCenteredZero: false
+                  axisColorMode: text
+                  axisLabel: ""
+                  axisPlacement: auto
+                  barAlignment: 0
+                  barWidthFactor: 0.6
+                  drawStyle: line
+                  fillOpacity: 0
+                  gradientMode: none
+                  hideFrom:
+                    legend: false
+                    tooltip: false
+                    viz: false
+                  insertNulls: false
+                  lineInterpolation: linear
+                  lineWidth: 1
+                  pointSize: 5
+                  scaleDistribution:
+                    type: linear
+                  showPoints: auto
+                  showValues: false
+                  spanNulls: false
+                  stacking:
+                    group: A
+                    mode: none
+                  thresholdsStyle:
+                    mode: dashed+area
+                max: 1
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: "#EAB839"
+                    value: 0.2
+                  - color: red
+                    value: 0.5
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                calcs: []
+                displayMode: list
+                placement: bottom
+                showLegend: false
+              tooltip:
+                hideZeros: false
+                mode: single
+                sort: none
+          version: 12.2.0
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" [$__auto])) by (event_data_http_host)
+                    queryType: instant
+                  version: v0
+                refId: calls-http-requests-count-table
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: (sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | (event_data_http_status_code >= 400 and event_data_http_status_code < 600) or event_data_http_status_code = 0 [$__auto])) by (event_data_http_host)) or on() vector(0)
+                    queryType: instant
+                  version: v0
+                refId: erroneous-requests-http-requests-count-table
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, {service_name="faro", app="$app", kind="event"} |= `"event_name":"faro.performance.resource"` |~ `"event_data_initiatorType":"(fetch|xmlhttprequest)"` | json  | k6_isK6Browser=~"" | line_format "{{.event_data_name}}" | pattern "<_>://<event_data_http_host>/<path>" | unwrap event_data_ttfb [$__auto]) by (event_data_http_host)
+                    queryType: instant
+                  version: v0
+                refId: ttfb-http-requests-table
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, ({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | unwrap event_data_duration_ns [$__auto])) by (event_data_http_host)
+                    queryType: instant
+                  version: v0
+                refId: duration-http-requests-table
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, ({service_name="faro", app="$app", kind="event"} |= `"event_name":"faro.performance.resource"` |~ `"event_data_initiatorType":"(fetch|xmlhttprequest)"` | json  | k6_isK6Browser=~"" | line_format "{{.event_data_name}}" | pattern "<_>://<event_data_http_host>/<path>" | unwrap event_data_transferSize [$__auto])) by (event_data_http_host)
+                    queryType: instant
+                  version: v0
+                refId: size-http-requests-table
+            queryOptions: {}
+            transformations:
+            - kind: merge
+              spec:
+                id: merge
+                options: {}
+            - kind: organize
+              spec:
+                id: organize
+                options:
+                  excludeByName:
+                    Time: true
+                    event_data_http_host: false
+                  includeByName: {}
+                  indexByName:
+                    Time: 0
+                    "Value #calls-http-requests-count-table": 3
+                    "Value #duration-http-requests-table": 5
+                    "Value #erroneous-requests-http-requests-count-table": 2
+                    "Value #size-http-requests-table": 6
+                    "Value #ttfb-http-requests-table": 4
+                    event_data_http_host: 1
+                  renameByName:
+                    "Value #calls-http-requests-count-table": Calls
+                    "Value #duration-http-requests-table": Duration
+                    "Value #erroneous-requests-http-requests-count-table": Errors
+                    "Value #size-http-requests-table": Transfer Size
+                    "Value #ttfb-http-requests-table": TTFB
+                    event_data_http_host: Domain
+        description: ""
+        id: 2
+        links: []
+        title: HTTP Requests
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                custom:
+                  align: auto
+                  cellOptions:
+                    type: auto
+                  footer:
+                    reducers: []
+                  inspect: false
+                mappings:
+                - options:
+                    null+nan:
+                      index: 0
+                      text: "0"
+                  type: value
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+              overrides:
+              - matcher:
+                  id: byName
+                  options: "Value #duration-http-requests-table"
+                properties:
+                - id: unit
+                  value: ns
+              - matcher:
+                  id: byName
+                  options: "Value #ttfb-http-requests-table"
+                properties:
+                - id: unit
+                  value: ms
+              - matcher:
+                  id: byName
+                  options: "Value #size-http-requests-table"
+                properties:
+                - id: unit
+                  value: bytes
+            options:
+              cellHeight: sm
+              frameIndex: 3
+              showHeader: true
+          version: 12.2.0
+    panel-6:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" [$__auto]))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 6
+        links: []
+        title: Request (total)
+        vizConfig:
+          group: stat
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: text
+                    value: 0
+              overrides: []
+            options:
+              colorMode: value
+              graphMode: none
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                - sum
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto
+              wideLayout: true
+          version: 12.2.0
+    panel-7:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: sum(count_over_time({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | (event_data_http_status_code >= 400 and event_data_http_status_code < 600) or event_data_http_status_code = 0 [$__auto]))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 7
+        links: []
+        title: Errors (total)
+        vizConfig:
+          group: stat
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                noValue: "0"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: red
+                    value: 0
+              overrides: []
+            options:
+              colorMode: value
+              graphMode: none
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                - sum
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto
+              wideLayout: true
+          version: 12.2.0
+    panel-8:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, ({service_name="faro", app="$app", kind="event"} |~ `"event_name":"(faro.tracing.fetch|faro.tracing.xml-http-request)"` |= `"event_data_http.status_code":` | json  | k6_isK6Browser=~"" | unwrap event_data_duration_ns [$__auto]))
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 8
+        links: []
+        title: Duration
+        vizConfig:
+          group: stat
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                noValue: "0"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: blue
+                    value: 0
+                unit: ns
+              overrides: []
+            options:
+              colorMode: value
+              graphMode: none
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                - mean
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto
+              wideLayout: true
+          version: 12.2.0
+    panel-9:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: loki
+                  group: loki
+                  kind: DataQuery
+                  spec:
+                    direction: backward
+                    editorMode: code
+                    expr: quantile_over_time($percentile, {service_name="faro", app="$app", kind="event"} |= `"event_name":"faro.performance.resource"` |~ `"event_data_initiatorType":"(fetch|xmlhttprequest)"` | json  | k6_isK6Browser=~"" | line_format "{{.event_data_name}}" | pattern "<_>://<event_data_http_host>/<path>" | unwrap event_data_ttfb [$__auto])
+                    queryType: instant
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 9
+        links: []
+        title: TTFB
+        vizConfig:
+          group: stat
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds
+                noValue: "0"
+                thresholds:
+                  mode: absolute
+                  steps:
+                  - color: green
+                    value: 0
+                  - color: "#EAB839"
+                    value: 800
+                  - color: red
+                    value: 1800
+                unit: ms
+              overrides: []
+            options:
+              colorMode: value
+              graphMode: none
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                - mean
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto
+              wideLayout: true
+          version: 12.2.0
+  layout:
+    kind: GridLayout
+    spec:
+      items:
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-6
+          height: 4
+          width: 4
+          x: 0
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-7
+          height: 4
+          width: 4
+          x: 4
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-9
+          height: 4
+          width: 4
+          x: 8
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-8
+          height: 4
+          width: 4
+          x: 12
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-10
+          height: 4
+          width: 4
+          x: 16
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-11
+          height: 8
+          width: 8
+          x: 0
+          "y": 4
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-13
+          height: 8
+          width: 8
+          x: 8
+          "y": 4
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-12
+          height: 8
+          width: 8
+          x: 16
+          "y": 4
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-2
+          height: 7
+          width: 24
+          x: 0
+          "y": 12
+  links:
+  - asDropdown: false
+    icon: external link
+    includeVars: true
+    keepTime: true
+    tags:
+    - grafana
+    - faro
+    targetBlank: true
+    title: Grafana Faro
+    tooltip: ""
+    type: dashboards
+    url: ""
+  liveNow: false
+  preload: false
+  tags:
+  - grafana
+  - faro
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: browser
+    to: now
+  title: Grafana Faro / HTTP
+  variables:
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: sesamy
+        value: sesamy
+      definition: ""
+      hide: dontHide
+      includeAll: false
+      label: Application
+      multi: false
+      name: app
+      options: []
+      query:
+        datasource:
+          name: loki
+        group: loki
+        kind: DataQuery
+        spec:
+          label: app
+          refId: LokiVariableQueryEditor-VariableQuery
+          stream: "{service_name=\"faro\"}"
+          type: 1
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: CustomVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: "0.75"
+        value: "0.75"
+      hide: dontHide
+      includeAll: false
+      label: ‰
+      multi: false
+      name: percentile
+      options:
+      - selected: true
+        text: "0.99"
+        value: "0.99"
+      - selected: false
+        text: "0.95"
+        value: "0.95"
+      - selected: false
+        text: "0.90"
+        value: "0.90"
+      - selected: false
+        text: "0.75"
+        value: "0.75"
+      - selected: false
+        text: "0.50"
+        value: "0.50"
+      query: 0.99,0.95,0.90,0.75,0.50
+      skipUrlSync: false

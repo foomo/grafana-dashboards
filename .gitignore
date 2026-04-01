@@ -8,23 +8,29 @@
 *.pem
 /tmp/
 
-### Git ###
+## Git
 !.gitkeep
 !.gitignore
 !.gitmodules
 !.gitattributes
 
-### GitHub ###
+## GitHub
 !.github/
 
-### VSCode ###
+## Mise
+!.mise.toml
+
+## Lefthook
+!.lefthook.yaml
+
+## VSCode
 !.vscode/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.default.json
 
-### EditorConfig ###
+## EditorConfig
 !.editorconfig
 
-### Grizzly ###
-settings.yaml
+## Grafanactl
+grafanactl.yaml
